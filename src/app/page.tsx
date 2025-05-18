@@ -32,8 +32,15 @@ async function getOnThisDayMemory(): Promise<Memory | null> {
       // Don't throw here, allow the page to render without this section
       return null; 
     }
-    const data = await res.json();
-    return data.memory;
+    // The API route directly returns the memory object if found
+    const memoryData = await res.json(); 
+    // If the response was a 404, res.ok would be false. 
+    // If it's 200 OK, memoryData should be the memory object, or potentially { message: "..." } if it was a 404 handled to return 200 (unlikely here)
+    // Check if memoryData has an id, a good indicator it's a memory object vs. a message object from a 404 response that somehow got status 200
+    if (memoryData && memoryData.id) {
+        return memoryData;
+    }
+    return null; // If not a valid memory object (e.g., {message: ...} or empty from a mishandled 404 that returned 200)
   } catch (error) {
     console.error("Error in getOnThisDayMemory:", error);
     return null; // Gracefully return null if there's an error
