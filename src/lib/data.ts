@@ -27,8 +27,9 @@ export async function getAllMemories(): Promise<Memory[]> {
       console.error(`Error fetching memories: ${res.status} ${res.statusText}`, errorBody);
       throw new Error(`Failed to fetch memories: ${res.status} ${errorBody}`);
     }
-    const data = await res.json();
-    return data.memories || [];
+    // The API route directly returns the array of memory objects
+    const memoriesArray = await res.json(); 
+    return memoriesArray || []; // Return the direct array, or empty if somehow null/undefined
   } catch (error) {
     console.error("Error in getAllMemories:", error);
     return []; // Return empty array or rethrow, depending on desired error handling
@@ -56,8 +57,9 @@ export async function getMemoryBySlug(slug: string): Promise<Memory | null> {
       console.error(`Error fetching memory by slug ${slug}: ${res.status} ${res.statusText}`, errorBody);
       throw new Error(`Failed to fetch memory ${slug}: ${res.status} ${errorBody}`);
     }
-    const data = await res.json();
-    return data.memory;
+    // The API route directly returns the memory object, not { memory: ... }
+    const memoryData = await res.json(); 
+    return memoryData; // Return the direct object
   } catch (error) {
     console.error(`Error in getMemoryBySlug (${slug}):`, error);
     return null; // Return null or rethrow
