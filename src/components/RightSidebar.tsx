@@ -1,57 +1,92 @@
-import { headers } from 'next/headers'; // Import headers
-import Link from 'next/link'; // For the button
+'use client';
+
+import React, { useState, useEffect, Suspense } from 'react';
+import Link from 'next/link';
 import styles from './RightSidebar.module.css';
+import { Lore } from '@/types'; // Assuming Lore type is defined in types.ts
 
-interface LoreEntry {
-  id: string;
-  content: string;
-  created_at: string;
-}
-
-async function getRandomLores(): Promise<LoreEntry[]> {
+// Renamed function to reflect fetching all lores
+async function fetchAllApprovedLores(): Promise<Lore[]> {
   try {
-    const host = headers().get('host');
-    const protocol = process.env.NODE_ENV === 'production' ? 'https' : 'http';
-    const apiUrl = `${protocol}://${host}/api/lores/random`;
-
-    const response = await fetch(apiUrl, {
-      cache: 'no-store', // Ensure fresh lore on each load
-    });
-
-    if (!response.ok) {
-      console.error("Failed to fetch random lores:", response.status, await response.text());
-      return []; // Return empty array on error
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL;
+    if (!appUrl) {
+      console.error("fetchAllApprovedLores: NEXT_PUBLIC_APP_URL is not defined.");
+      return [];
     }
-    return await response.json();
+    const response = await fetch(`${appUrl}/api/lores/all`, { cache: 'no-store' });
+    if (!response.ok) {
+      const errorBody = await response.text();
+      console.error('Failed to fetch all approved lores:', response.status, errorBody);
+      return [];
+    }
+    const data = await response.json();
+    return Array.isArray(data) ? data : []; // Ensure it returns an array
   } catch (error) {
-    console.error("Error in getRandomLores:", error);
+    console.error('Error fetching all lores:', error);
     return [];
   }
 }
 
-export default async function RightSidebar() {
-  const lores = await getRandomLores();
+const JoeBobbyLore: React.FC = () => {
+  const [lores, setLores] = useState<Lore[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const loadLores = async () => {
+      setIsLoading(true);
+      setError(null);
+      try {
+        const fetchedLores = await fetchAllApprovedLores();
+        setLores(fetchedLores);
+      } catch (e) {
+        console.error("Error in loadLores:", e);
+        setError('Could not load lore at this time.');
+      }
+      setIsLoading(false);
+    };
+
+    loadLores();
+  }, []);
+
+  if (isLoading) {
+    return <p className={styles.loreItem}>Loading lore...</p>;
+  }
+
+  if (error) {
+    return <p className={styles.loreItemError}>{error}</p>;
+  }
 
   return (
-    <aside className={styles.sidebar}>
-      <h2 className={styles.title}>Joe Bobby Lore</h2>
-      
+    <div className={styles.loreSection}>
+      <h3 className={styles.loreTitle}>Joe Bobby Lore</h3>
       {lores.length > 0 ? (
-        lores.map((lore) => (
-          <div key={lore.id} className={styles.loreEntry}>
-            <p>{lore.content}</p>
-          </div>
-        ))
+        <div className={styles.loresListContainer}> {/* Added for scrolling */}
+          {lores.map((loreEntry) => (
+            <p key={loreEntry.id} className={styles.loreItem}>
+              {loreEntry.content}
+            </p>
+          ))}
+        </div>
       ) : (
-        <p className={styles.noLoresMessage}>No lore to display yet. Be the first to contribute!</p>
+        <p className={styles.loreItem}>No lore available at the moment. Be the first to contribute!</p>
       )}
+      <Link href="/lore/submit" className={styles.submitLoreLink}>
+        Contribute to Lore
+      </Link>
+    </div>
+  );
+};
 
-      <div className={styles.contributeButtonContainer}>
-        {/* TODO: Link this button to a lore submission page/modal */}
-        <Link href="/contribute-lore" className={styles.contributeButton}>
-          Contribute to Lore
-        </Link>
-      </div>
+const RightSidebar = () => {
+  return (
+    <aside className={styles.sidebar}>
+      <Suspense fallback={<p className={styles.loreItem}>Loading lore section...</p>}>
+        <JoeBobbyLore />
+      </Suspense>
+      {/* Other sidebar content can go here */}
     </aside>
   );
-} 
+};
+
+export default RightSidebar; 

@@ -76,4 +76,67 @@
   .sidebar {
     display: none;
   }
+}
+
+.loreItem {
+  font-size: 0.9rem;
+  color: var(--text-color-primary);
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px dashed var(--sidebar-border);
+}
+
+.loreItem:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+.loreItemError {
+  composes: loreItem;
+  color: var(--error-red);
+}
+
+.submitLoreLink {
+  display: inline-block;
+  margin-top: 1rem;
+  padding: 0.5rem 1rem;
+  background-color: var(--button-primary-bg);
+  color: var(--button-primary-text);
+  border: 1px solid var(--button-primary-border);
+  text-decoration: none;
+  border-radius: 0.25rem;
+  font-family: var(--font-secondary);
+  font-size: 0.8rem;
+  text-align: center;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.submitLoreLink:hover {
+  background-color: var(--button-primary-hover-bg);
+  color: var(--button-primary-hover-text);
+}
+
+.loresListContainer {
+  max-height: 300px; /* Adjust as needed */
+  overflow-y: auto;
+  padding-right: 0.5rem; /* To prevent scrollbar from overlapping content */
+  margin-bottom: 1rem; /* Space before the contribute button */
+}
+
+/* Styles for the scrollbar itself to match theme - optional but nice */
+.loresListContainer::-webkit-scrollbar {
+  width: 6px;
+}
+
+.loresListContainer::-webkit-scrollbar-track {
+  background-color: var(--sidebar-bg); /* Or a slightly lighter/darker shade */
+}
+
+.loresListContainer::-webkit-scrollbar-thumb {
+  background-color: var(--scrollbar-thumb-color);
+  border-radius: 3px;
+}
+
+.loresListContainer::-webkit-scrollbar-thumb:hover {
+  background-color: var(--scrollbar-thumb-hover-color);
 } 

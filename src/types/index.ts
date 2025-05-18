@@ -47,4 +47,11 @@ export interface RichTextContent {
     type: string;
     attrs?: Record<string, unknown>;
   }>;
+}
+
+export interface Lore {
+  content: string;
+  id: string;
+  created_at: string;
+  is_approved: boolean;
 } 
