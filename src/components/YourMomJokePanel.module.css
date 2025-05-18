@@ -47,5 +47,5 @@
 }
 
 .newJokeButton:hover {
-  background-color: var(--ink-color);
+  background-color: var(--button-primary-hover-bg);
 } 

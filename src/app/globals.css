@@ -109,10 +109,10 @@ html[data-theme="matcha"] {
   --border-color: var(--matcha-chamoisee); /* Chamoisee borders */
   --card-bg-color: #D2C6B0; /* Lighter Chamoisee/Lion tint for cards */
   
-  --button-primary-bg: var(--matcha-chamoisee);
+  --button-primary-bg: var(--matcha-lion);
   --button-primary-text: var(--matcha-alabaster);
   --button-primary-border: var(--matcha-olive);
-  --button-primary-hover-bg: var(--matcha-alabaster);
+  --button-primary-hover-bg: var(--ink-black);
   --button-primary-hover-text: var(--matcha-chamoisee);
   
   --header-bg: var(--matcha-olive); /* HEADER is OLIVE (darker green) */

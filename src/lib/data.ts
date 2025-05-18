@@ -29,7 +29,7 @@ export async function getAllMemories(): Promise<Memory[]> {
     }
     // The API route directly returns the array of memory objects
     const memoriesArray = await res.json(); 
-    return memoriesArray || []; // Return the direct array, or empty if somehow null/undefined
+    return memoriesArray || []; // Ensure an array is returned
   } catch (error) {
     console.error("Error in getAllMemories:", error);
     return []; // Return empty array or rethrow, depending on desired error handling

@@ -3,9 +3,8 @@
 import React, { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
 import styles from './RightSidebar.module.css';
-import { Lore } from '@/types'; // Assuming Lore type is defined in types.ts
+import { Lore } from '@/types';
 
-// Renamed function to reflect fetching all lores
 async function fetchAllApprovedLores(): Promise<Lore[]> {
   try {
     const appUrl = process.env.NEXT_PUBLIC_APP_URL;

@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import styles from './Header.module.css'; // Import CSS Modules
+import styles from './Header.module.css';
 import { usePageTitle } from '@/context/PageTitleContext'; // Import usePageTitle
 import React from 'react';
 import ThemeSwitcher from './ThemeSwitcher'; // Import ThemeSwitcher

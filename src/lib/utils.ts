@@ -52,7 +52,6 @@ export function extractSpotifyPlaylistId(input: string): string | null {
     return input;
   }
   
-  // Try to extract from URL
   try {
     const url = new URL(input);
     if (url.hostname.includes('spotify.com')) {

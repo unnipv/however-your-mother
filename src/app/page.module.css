@@ -131,13 +131,13 @@
 /* --- Re-usable/General Styles (some might be adjusted or new) --- */
 
 .createOneLink {
-  background-color: var(--vintage-green);
-  color: var(--paper-color-light);
+  background-color: var(--button-primary-bg);
+  color: var(--button-primary-text);
   /* Inherits .btn from globals.css */
 }
 
 .createOneLink:hover {
-  background-color: var(--vintage-green-dark);
+  background-color: var(--button-primary-hover-bg);
 }
 
 .fetchError {
