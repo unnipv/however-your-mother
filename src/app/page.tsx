@@ -6,26 +6,37 @@ import { Memory } from '@/types'; // Ensure Memory type is imported
 import styles from './page.module.css'; // Import CSS Modules
 import OnThisDayMemoryCard from '@/components/OnThisDayMemoryCard'; // Import the new component
 import YourMomJokePanel from '@/components/YourMomJokePanel'; // Import the new joke panel
-import { headers } from 'next/headers'; // Import headers
+// import { headers } from 'next/headers'; // Remove headers import
 
+// Helper function to fetch the "On This Day" memory
 async function getOnThisDayMemory(): Promise<Memory | null> {
+  // const host = headers().get('host');
+  // const protocol = process.env.NODE_ENV === 'development' ? 'http' : 'https';
+  // const appUrl = \`\${protocol}://\${host}\`;
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL;
+
+  if (!appUrl) {
+    console.error("getOnThisDayMemory: NEXT_PUBLIC_APP_URL is not defined. Cannot fetch 'On This Day' memory.");
+    return null;
+  }
+
   try {
-    const host = headers().get('host'); // Get host
-    const protocol = process.env.NODE_ENV === 'production' ? 'https' : 'http'; // Determine protocol
-    const res = await fetch(`${protocol}://${host}/api/memories/on-this-day`, { // Construct full URL
-      cache: 'no-store', // Fetch fresh data every time for this feature
+    const res = await fetch(`${appUrl}/api/memories/on-this-day`, {
+      cache: "no-store", // Always fetch fresh data for this dynamic content
     });
+
     if (!res.ok) {
-      if (res.status === 404) {
-        // console.log("No 'On This Day' memory found.");
-        return null; // Expected if no memory matches
-      }
-      throw new Error(`Failed to fetch 'On This Day' memory: ${res.statusText} (status: ${res.status})`);
+      // Log more detailed error information
+      const errorBody = await res.text(); 
+      console.error(`Error fetching 'On This Day' memory: ${res.status} ${res.statusText}`, errorBody);
+      // Don't throw here, allow the page to render without this section
+      return null; 
     }
-    return res.json();
+    const data = await res.json();
+    return data.memory;
   } catch (error) {
-    console.error("Error fetching 'On This Day' memory:", error);
-    return null; // Return null on error so the page can still render
+    console.error("Error in getOnThisDayMemory:", error);
+    return null; // Gracefully return null if there's an error
   }
 }
 
