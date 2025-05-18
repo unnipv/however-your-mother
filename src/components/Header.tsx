@@ -2,85 +2,83 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import styles from './Header.module.css'; // Import CSS Modules
+import { usePageTitle } from '@/context/PageTitleContext'; // Import usePageTitle
+import React from 'react';
 
 export default function Header() {
   const pathname = usePathname();
+  const { headerBannerTitle, setPageTitle } = usePageTitle(); // Consume context
   
   // Check if the current path is active
   const isActive = (path: string) => {
     return pathname === path;
   };
   
+  // Pathname-based title logic (can be a fallback or enhancement)
+  // This useEffect will update the context if no page-specific title was set higher up.
+  // This is useful for pages that don't set their own title via a MemoryTitleSetter.
+  React.useEffect(() => {
+    let titleBasedOnPath = null;
+    if (pathname === '/') {
+      titleBasedOnPath = "Recent Memories";
+    } else if (pathname === '/memories') {
+      titleBasedOnPath = "All Memories";
+    } else if (pathname.startsWith('/memories/') && pathname.length > '/memories/'.length) {
+      // Placeholder for specific memory pages - actual title will be set by MemoryTitleSetter
+      // If MemoryTitleSetter hasn't run yet, this could be a brief fallback.
+      titleBasedOnPath = "A Cherished Memory"; 
+    } else if (pathname === '/editor') {
+      titleBasedOnPath = "Create a New Memory";
+    }
+    // Only set if the context hasn't already received a more specific title from a page component.
+    // The current logic in PageTitleContext gives precedence to what's set via setPageTitle.
+    // So, this useEffect might primarily set the title for non-memory pages if they don't set one themselves.
+    if (titleBasedOnPath) {
+      setPageTitle(titleBasedOnPath); 
+    }
+    // When navigating away from a page that set a title (like a memory page),
+    // we might want to clear it or let the new page set its own.
+    // The current setup will have the new page (e.g. /memories) set its title via this effect.
+  }, [pathname, setPageTitle]);
+
   return (
-    <header style={{ 
-      backgroundColor: '#F8F1DE',
-      borderBottom: '1px solid #F1E3BE',
-      boxShadow: '0 1px 2px rgba(0, 0, 0, 0.05)'
-    }}>
-      <div style={{
-        maxWidth: '1200px',
-        margin: '0 auto',
-        padding: '1rem'
-      }}>
-        <div style={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'space-between'
-        }}>
-          <div style={{ marginBottom: '1rem' }}>
-            <Link href="/" style={{
-              fontSize: '1.5rem',
-              fontFamily: 'Georgia, Times New Roman, serif',
-              fontWeight: 'bold',
-              color: '#8C5E58'
-            }}>
-              HOWEVER-YOUR-MOTHER
+    <header className={styles.headerBase}>
+      <div className={styles.container}>
+        <div className={styles.headerContent}>
+          <div className={styles.titleWrapper}> 
+            <Link href="/" className={styles.siteTitleLink}>
+              Joseph Bobber, a man of multiple interests.
             </Link>
           </div>
           
-          <nav style={{ display: 'flex', gap: '1.5rem' }}>
+          <nav className={styles.nav}>
             <Link 
               href="/" 
-              style={{
-                fontFamily: 'Courier New, Courier, monospace',
-                fontSize: '0.875rem',
-                textTransform: 'uppercase',
-                letterSpacing: '0.05em',
-                color: isActive('/') ? '#4A6FA5' : '#2C2C2C',
-                fontWeight: isActive('/') ? 'bold' : 'normal'
-              }}
+              className={`${styles.navLink} ${isActive('/') ? styles.navLinkActive : ''}`}
             >
               Home
             </Link>
             <Link 
               href="/memories" 
-              style={{
-                fontFamily: 'Courier New, Courier, monospace',
-                fontSize: '0.875rem',
-                textTransform: 'uppercase',
-                letterSpacing: '0.05em',
-                color: isActive('/memories') ? '#4A6FA5' : '#2C2C2C',
-                fontWeight: isActive('/memories') ? 'bold' : 'normal'
-              }}
+              className={`${styles.navLink} ${isActive('/memories') ? styles.navLinkActive : ''}`}
             >
               Memories
             </Link>
             <Link 
               href="/editor" 
-              style={{
-                fontFamily: 'Courier New, Courier, monospace',
-                fontSize: '0.875rem',
-                textTransform: 'uppercase',
-                letterSpacing: '0.05em',
-                color: isActive('/editor') ? '#4A6FA5' : '#2C2C2C',
-                fontWeight: isActive('/editor') ? 'bold' : 'normal'
-              }}
+              className={`${styles.navLink} ${isActive('/editor') ? styles.navLinkActive : ''}`}
             >
               Create Memory
             </Link>
           </nav>
         </div>
+        {/* Dynamic Page Title Banner - now uses headerBannerTitle from context */}
+        {headerBannerTitle && (
+          <div className={styles.pageTitleBanner}>
+            <h2>{headerBannerTitle}</h2>
+          </div>
+        )}
       </div>
     </header>
   );

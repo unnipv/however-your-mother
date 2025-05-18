@@ -1,0 +1,18 @@
+.embedContainer {
+  border-radius: 0.25rem; /* Adjusted for theme consistency */
+  /* box-shadow: var(--shadow-vintage-lg); */ /* Removed shadow */
+  overflow: hidden; /* Ensures the iframe corners are also rounded */
+  width: 100%;
+  height: 100%; /* Allow parent to control height */
+  display: flex; /* To make iframe fill container */
+  flex-direction: column; /* Ensure it can direct a single child properly */
+}
+
+.spotifyIframe {
+  border-radius: 0.25rem; /* Match container */
+  border: none;
+  width: 100%;
+  flex-grow: 1; /* Make iframe take up all available space in the flex container */
+  /* min-height removed as parent should always control height; iframe default is ~150px if unspecified by Spotify itself. */
+  /* The 100% height should ideally be governed by parent. */
+} 

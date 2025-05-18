@@ -1,23 +1,23 @@
 'use client';
+import styles from './SpotifyEmbed.module.css';
 
 interface SpotifyEmbedProps {
   playlistId: string;
-  height?: number;
+  // height prop is removed as CSS will control it via parent
 }
 
-export default function SpotifyEmbed({ playlistId, height = 380 }: SpotifyEmbedProps) {
+export default function SpotifyEmbed({ playlistId }: SpotifyEmbedProps) {
   const embedUrl = `https://open.spotify.com/embed/playlist/${playlistId}`;
   
   return (
-    <div className="spotify-embed my-6 rounded-lg overflow-hidden shadow-vintage-lg">
+    <div className={styles.embedContainer}>
       <iframe 
+        className={styles.spotifyIframe}
         src={embedUrl}
-        width="100%" 
-        height={height}
-        frameBorder="0" 
-        allowTransparency={true} 
-        allow="encrypted-media"
+        allowFullScreen={true} // Spotify recommended
+        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" // Spotify recommended
         loading="lazy"
+        title={`Spotify Playlist ${playlistId}`} // Added for accessibility
       ></iframe>
     </div>
   );

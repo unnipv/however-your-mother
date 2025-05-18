@@ -1,0 +1,77 @@
+.headerBase {
+  background-color: rgba(241, 227, 190, 0.6); /* var(--sepia-200) with alpha? Consider direct var if opaque desired */
+  border-bottom: 1px solid var(--sepia-200);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  padding: 1rem 0;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.headerContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.titleWrapper {
+  margin-bottom: 1rem;
+}
+
+.siteTitleLink {
+  font-size: 1.5rem;
+  font-family: var(--font-primary);
+  font-weight: bold;
+  color: var(--vintage-brown);
+  text-decoration: underline;
+  text-decoration-color: var(--vintage-brown);
+  text-underline-offset: 0.2em; 
+}
+
+.nav {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.navLink {
+  font-family: var(--font-secondary);
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--ink-color);
+  font-weight: normal;
+  text-decoration: underline;
+  text-decoration-color: var(--ink-color);
+  text-underline-offset: 0.15em; /* Slightly smaller offset for smaller text */
+  transition: color 0.2s ease-in-out, font-weight 0.2s ease-in-out;
+}
+
+.navLinkActive {
+  color: var(--vintage-blue);
+  font-weight: bold;
+  text-decoration-color: var(--vintage-blue);
+}
+
+.pageTitleBanner {
+  width: 100%;
+  text-align: center;
+  padding: 0.5rem 0;
+  margin-top: 0.75rem; /* Space between nav and this banner */
+  border-top: 1px dashed var(--sepia-300); /* A subtle separator */
+  border-bottom: 1px dashed var(--sepia-300); /* A subtle separator */
+}
+
+.pageTitleBanner h2 {
+  font-family: var(--font-primary);
+  font-size: 1.25rem; /* Adjust size as needed */
+  color: var(--vintage-brown);
+  font-weight: bold;
+  margin: 0; /* Reset default h2 margin */
+  /* text-decoration: underline; */ /* Optional: if titles here should also be underlined */
+  /* text-decoration-color: var(--vintage-brown); */
+  /* text-underline-offset: 0.2em; */
+} 

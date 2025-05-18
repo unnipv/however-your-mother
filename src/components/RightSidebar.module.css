@@ -1,0 +1,75 @@
+.sidebar {
+  padding: 1rem;
+  border-left: 3px double var(--vintage-gold-dark); /* Using CSS var */
+  min-height: calc(100vh - 100px); /* Assuming header is roughly 100px */
+  background-color: rgba(241, 227, 190, 0.6); /* var(--sepia-200) with alpha */
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem; /* Increased gap for sections */
+  align-items: stretch; /* Stretch items to fill width */
+  overflow-y: auto;
+  overflow-x: hidden;
+  font-family: var(--font-secondary);
+}
+
+.title {
+  font-family: var(--font-primary);
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--vintage-brown);
+  text-align: center;
+  margin-bottom: 0.5rem;
+  border-bottom: 1px solid var(--vintage-brown-light);
+  padding-bottom: 0.5rem;
+}
+
+.loreEntry {
+  background-color: rgba(252, 249, 241, 0.5); /* var(--paper-white) with alpha */
+  padding: 0.75rem;
+  border-radius: 4px;
+  border: 1px solid var(--sepia-300);
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--ink-color);
+  white-space: pre-wrap; /* Preserve line breaks in lore content */
+}
+
+.noLoresMessage {
+  text-align: center;
+  color: var(--ink-color-lightest);
+  font-style: italic;
+}
+
+.contributeButtonContainer {
+  /* margin-top: auto; */ /* Removed to place button after lores */
+  padding-top: 1rem; /* Keep some space above the button */
+  /* border-top: 1px dashed var(--sepia-400); */ /* Removed border */
+  display: flex; 
+  justify-content: center;
+}
+
+.contributeButton {
+  background-color: var(--vintage-green);
+  color: var(--paper-white);
+  font-family: var(--font-primary);
+  font-size: 1rem;
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background-color 0.2s ease;
+  box-shadow: var(--shadow-vintage);
+}
+
+.contributeButton:hover {
+  background-color: var(--vintage-green-dark);
+  box-shadow: var(--shadow-vintage-lg);
+}
+
+/* Hide sidebar on smaller screens by default */
+@media (max-width: 768px) {
+  .sidebar {
+    display: none;
+  }
+} 

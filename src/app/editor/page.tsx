@@ -1,23 +1,27 @@
 'use client';
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useForm, SubmitHandler } from 'react-hook-form';
+import { useForm, SubmitHandler, Controller } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { v4 as uuidv4 } from 'uuid';
 import RichTextEditor from '@/components/RichTextEditor';
-import { generateSlug, extractSpotifyPlaylistId, getPlaceholderThumbnail } from '@/lib/utils';
-import { MemoryFormData } from '@/types';
+import { extractSpotifyPlaylistId } from '@/lib/utils';
+import styles from './editor.module.css'; // Import CSS module
 
 // Form validation schema
 const memoryFormSchema = z.object({
-  title: z.string().min(3, 'Title must be at least 3 characters'),
+  title: z.string().min(3, 'Title must be at least 3 characters long'),
   creator_names: z.string().optional(),
-  short_description: z.string().max(200, 'Description must be less than 200 characters').optional(),
-  content: z.string().min(10, 'Content is required'),
+  short_description: z.string().max(250, 'Short description must be 250 characters or less').optional(),
+  content: z.string().min(20, 'Memory content must be at least 20 characters long'), // Content comes from Tiptap as JSON string
+  thumbnail_url: z.string().url('Please enter a valid URL for the thumbnail').optional().or(z.literal('')),
   spotify_playlist_id: z.string().optional(),
-  password: z.string().optional(),
+  password: z.string().min(4, 'Password must be at least 4 characters long').optional().or(z.literal('')),
+  memory_date: z.string().optional().refine((date) => {
+    if (!date || date === '') return true; // Allow empty or undefined
+    return !isNaN(new Date(date).getTime()); // Check if it's a valid date string
+  }, { message: "Please enter a valid date." }).or(z.literal('')),
 });
 
 type FormData = z.infer<typeof memoryFormSchema>;
@@ -25,178 +29,207 @@ type FormData = z.infer<typeof memoryFormSchema>;
 export default function EditorPage() {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [editorContent, setEditorContent] = useState('');
-  
-  // Initialize the form with React Hook Form
-  const { register, handleSubmit, formState: { errors }, setValue, watch } = useForm<FormData>({
+  const [submitError, setSubmitError] = useState<string | null>(null);
+
+  const { control, register, handleSubmit, formState: { errors }, setValue } = useForm<FormData>({
     resolver: zodResolver(memoryFormSchema),
     defaultValues: {
       title: '',
       creator_names: '',
       short_description: '',
-      content: '',
+      content: '', // Initial content for Tiptap can be empty string or valid JSON string
+      thumbnail_url: '',
       spotify_playlist_id: '',
       password: '',
+      memory_date: '', // Add default value for memory_date
     },
   });
-  
-  // Handle rich text editor content changes
-  const handleEditorChange = (content: string) => {
-    setEditorContent(content);
-    setValue('content', content, { shouldValidate: true });
-  };
-  
-  // Form submission handler
+
   const onSubmit: SubmitHandler<FormData> = async (data) => {
     setIsSubmitting(true);
-    
+    setSubmitError(null);
     try {
-      // In a real app, this would send data to an API
-      // For now, we'll just create a mock memory and redirect
-      
-      // Process the Spotify playlist ID if provided
       let spotifyId = data.spotify_playlist_id;
-      if (spotifyId) {
+      if (spotifyId && spotifyId.trim() !== '') {
         const extractedId = extractSpotifyPlaylistId(spotifyId);
+        // If extraction returns something, use it, otherwise, assume it might be an ID already or invalid
         spotifyId = extractedId || spotifyId;
       }
-      
-      // Create a new memory object
-      const newMemory = {
-        id: uuidv4(),
-        title: data.title,
-        slug: generateSlug(data.title),
-        creator_names: data.creator_names || undefined,
-        short_description: data.short_description || undefined,
-        content: data.content,
-        spotify_playlist_id: spotifyId || undefined,
-        password: data.password || undefined,
-        thumbnail_url: getPlaceholderThumbnail(), // Use utility function
-        media_r2_keys: [],
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
+
+      // Content from Tiptap is already a JSON string via setValue in Controller
+      const newMemoryPayload = {
+        ...data,
+        content: data.content, // Already a string
+        thumbnail_url: data.thumbnail_url || undefined, // Send undefined if empty to Supabase
+        spotify_playlist_id: spotifyId || undefined, // Send undefined if empty
+        password: data.password || undefined, // Send undefined if empty
+        memory_date: data.memory_date || null, // Send null if empty or undefined
       };
+
+      const response = await fetch('/api/memories', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newMemoryPayload),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to save memory');
+      }
       
-      // In a real app, we would save this to the database
-      console.log('Created memory:', newMemory);
-      
-      // For now, we'll just show a success message and redirect
-      alert('Memory created successfully!');
-      router.push('/memories');
-      
+      const savedMemory = await response.json();
+      router.push(`/memories/${savedMemory.slug}`);
+
     } catch (error) {
       console.error('Error creating memory:', error);
-      alert('Failed to create memory. Please try again.');
+      const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred.';
+      setSubmitError(errorMessage);
     } finally {
       setIsSubmitting(false);
     }
   };
-  
+
   return (
-    <div className="max-w-4xl mx-auto">
-      <h1 className="text-3xl font-vintage font-bold text-vintage-brown mb-6">
+    <div className={styles.pageContainer}>
+      <h1 className={styles.pageTitle}>
         Create a New Memory
       </h1>
       
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-        {/* Title */}
-        <div>
-          <label htmlFor="title" className="block text-lg font-vintage mb-2">
-            Title <span className="text-vintage-red">*</span>
+      <form onSubmit={handleSubmit(onSubmit)} className={styles.formContainer}>
+        <div className={styles.formRow}>
+          <label htmlFor="title" className={styles.label}>
+            Title <span className={styles.requiredAsterisk}>*</span>
           </label>
           <input
             id="title"
             type="text"
-            className="w-full px-4 py-2 rounded border border-sepia-300 bg-white font-typewriter focus:outline-none focus:ring-2 focus:ring-vintage-yellow"
-            placeholder="Enter a title for your memory"
+            className={styles.input}
+            placeholder="A captivating title for your memory"
             {...register('title')}
           />
-          {errors.title && (
-            <p className="mt-1 text-sm text-vintage-red">{errors.title.message}</p>
-          )}
+          {errors.title && <p className={styles.errorMessage}>{errors.title.message}</p>}
         </div>
         
-        {/* Creator Names */}
-        <div>
-          <label htmlFor="creator_names" className="block text-lg font-vintage mb-2">
+        <div className={styles.formRow}>
+          <label htmlFor="creator_names" className={styles.label}>
             Creator Name(s)
           </label>
           <input
             id="creator_names"
             type="text"
-            className="w-full px-4 py-2 rounded border border-sepia-300 bg-white font-typewriter focus:outline-none focus:ring-2 focus:ring-vintage-yellow"
-            placeholder="Who created this memory? (optional)"
+            className={styles.input}
+            placeholder="E.g., Jane Doe, The Globetrotters (optional)"
             {...register('creator_names')}
           />
         </div>
         
-        {/* Short Description */}
-        <div>
-          <label htmlFor="short_description" className="block text-lg font-vintage mb-2">
+        <div className={styles.formRow}>
+          <label htmlFor="short_description" className={styles.label}>
             Short Description
           </label>
           <textarea
             id="short_description"
-            rows={3}
-            className="w-full px-4 py-2 rounded border border-sepia-300 bg-white font-typewriter focus:outline-none focus:ring-2 focus:ring-vintage-yellow"
-            placeholder="Briefly describe this memory (optional)"
+            rows={3} // This can be adjusted or controlled by CSS min-height
+            className={styles.textarea}
+            placeholder="A brief teaser or summary (optional, max 250 chars)"
             {...register('short_description')}
           ></textarea>
-          {errors.short_description && (
-            <p className="mt-1 text-sm text-vintage-red">{errors.short_description.message}</p>
-          )}
+          {errors.short_description && <p className={styles.errorMessage}>{errors.short_description.message}</p>}
         </div>
         
-        {/* Rich Text Editor */}
-        <div>
-          <label htmlFor="content" className="block text-lg font-vintage mb-2">
-            Memory Content <span className="text-vintage-red">*</span>
+        <div className={styles.formRow}>
+          <label htmlFor="content" className={styles.label}>
+            Memory Content <span className={styles.requiredAsterisk}>*</span>
           </label>
-          <RichTextEditor
-            content={editorContent}
-            onChange={handleEditorChange}
+          <Controller
+            name="content"
+            control={control}
+            render={({ field }) => (
+              <div className={styles.richTextEditorWrapper}> {/* Added wrapper */} 
+                <RichTextEditor
+                  // Pass initial content as a string. Tiptap will parse it if it's JSON.
+                  content={field.value || ''} 
+                  onChange={(contentValue) => {
+                    // Tiptap usually returns JSON or HTML. Ensure it's stringified for the form.
+                    const stringValue = typeof contentValue === 'string' ? contentValue : JSON.stringify(contentValue);
+                    setValue('content', stringValue, { shouldValidate: true });
+                  }}
+                  // Potentially pass a className here if RichTextEditor supports it for further internal styling
+                />
+              </div>
+            )}
           />
-          {errors.content && (
-            <p className="mt-1 text-sm text-vintage-red">{errors.content.message}</p>
-          )}
+          {errors.content && <p className={styles.errorMessage}>{errors.content.message}</p>}
         </div>
         
-        {/* Spotify Playlist */}
-        <div>
-          <label htmlFor="spotify_playlist_id" className="block text-lg font-vintage mb-2">
+        <div className={styles.formRow}>
+          <label htmlFor="thumbnail_url" className={styles.label}>
+            Thumbnail Image URL
+          </label>
+          <input
+            id="thumbnail_url"
+            type="url"
+            className={styles.input}
+            placeholder="https://example.com/image.jpg (optional, direct URL)"
+            {...register('thumbnail_url')}
+          />
+          {errors.thumbnail_url && <p className={styles.errorMessage}>{errors.thumbnail_url.message}</p>}
+        </div>
+        
+        <div className={styles.formRow}>
+          <label htmlFor="spotify_playlist_id" className={styles.label}>
             Spotify Playlist URL or ID
           </label>
           <input
             id="spotify_playlist_id"
             type="text"
-            className="w-full px-4 py-2 rounded border border-sepia-300 bg-white font-typewriter focus:outline-none focus:ring-2 focus:ring-vintage-yellow"
-            placeholder="Add a Spotify playlist (optional)"
+            className={styles.input}
+            placeholder="Paste a Spotify playlist link or ID (optional)"
             {...register('spotify_playlist_id')}
           />
         </div>
         
-        {/* Password Protection */}
-        <div>
-          <label htmlFor="password" className="block text-lg font-vintage mb-2">
+        <div className={styles.formRow}>
+          <label htmlFor="password" className={styles.label}>
             Password Protection
           </label>
           <input
             id="password"
             type="password"
-            className="w-full px-4 py-2 rounded border border-sepia-300 bg-white font-typewriter focus:outline-none focus:ring-2 focus:ring-vintage-yellow"
-            placeholder="Add a password to protect this memory (optional)"
+            className={styles.input}
+            placeholder="Leave blank if no password needed (min 4 chars)"
             {...register('password')}
           />
+          {errors.password && <p className={styles.errorMessage}>{errors.password.message}</p>}
         </div>
+
+        {/* New Memory Date Field */}
+        <div className={styles.formRow}>
+          <label htmlFor="memory_date" className={styles.label}>
+            Date of Memory (Optional)
+          </label>
+          <input
+            id="memory_date"
+            type="date"
+            className={styles.input} 
+            {...register('memory_date')}
+          />
+          {errors.memory_date && <p className={styles.errorMessage}>{errors.memory_date.message}</p>}
+        </div>
+
+        {submitError && (
+          <div className={styles.submitErrorContainer}>
+            <p>{submitError}</p>
+          </div>
+        )}
         
-        {/* Submit Button */}
-        <div>
+        <div className={styles.buttonContainer}>
           <button
             type="submit"
+            className={styles.submitButton}
             disabled={isSubmitting}
-            className="bg-vintage-teal hover:bg-opacity-90 text-white font-vintage py-3 px-6 rounded-lg shadow-vintage transition disabled:opacity-70"
           >
-            {isSubmitting ? 'Creating Memory...' : 'Create Memory'}
+            {isSubmitting ? 'Submitting...' : 'Create Memory'}
           </button>
         </div>
       </form>

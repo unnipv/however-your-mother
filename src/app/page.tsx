@@ -1,96 +1,116 @@
 import MemoryCard from '@/components/MemoryCard';
-import { getAllMockMemories } from '@/lib/mockData';
+// import { getAllMockMemories } from '@/lib/mockData'; // Remove mock
+import { getAllMemories } from '@/lib/data'; // Add this
 import Link from 'next/link';
+import { Memory } from '@/types'; // Ensure Memory type is imported
+import styles from './page.module.css'; // Import CSS Modules
+import OnThisDayMemoryCard from '@/components/OnThisDayMemoryCard'; // Import the new component
+import YourMomJokePanel from '@/components/YourMomJokePanel'; // Import the new joke panel
+import { headers } from 'next/headers'; // Import headers
 
-export default function Home() {
-  // In production, this would be fetched from a real database
-  const memories = getAllMockMemories();
-  
+async function getOnThisDayMemory(): Promise<Memory | null> {
+  try {
+    const host = headers().get('host'); // Get host
+    const protocol = process.env.NODE_ENV === 'production' ? 'https' : 'http'; // Determine protocol
+    const res = await fetch(`${protocol}://${host}/api/memories/on-this-day`, { // Construct full URL
+      cache: 'no-store', // Fetch fresh data every time for this feature
+    });
+    if (!res.ok) {
+      if (res.status === 404) {
+        // console.log("No 'On This Day' memory found.");
+        return null; // Expected if no memory matches
+      }
+      throw new Error(`Failed to fetch 'On This Day' memory: ${res.statusText} (status: ${res.status})`);
+    }
+    return res.json();
+  } catch (error) {
+    console.error("Error fetching 'On This Day' memory:", error);
+    return null; // Return null on error so the page can still render
+  }
+}
+
+export default async function Home() {
+  let allRecentMemories: Memory[] = [];
+  let fetchError: string | null = null;
+  let onThisDayMemoryData: Memory | null = null;
+
+  try {
+    [allRecentMemories, onThisDayMemoryData] = await Promise.all([
+      getAllMemories(), // Fetches all memories, ordered by creation date
+      getOnThisDayMemory(),
+    ]);
+  } catch (error) {
+    console.error("Home page - fetch error:", error);
+    fetchError = "Could not load memories. Please try again later.";
+  }
+
+  // Prepare memories for the right column (2x2 grid)
+  // Exclude the "On This Day" memory if it exists and is also in recent memories
+  const rightColumnMemories = allRecentMemories
+    .filter(mem => !onThisDayMemoryData || mem.id !== onThisDayMemoryData.id)
+    .slice(0, 4); // Take up to 4 for the 2x2 grid
+
   return (
-    <div style={{ 
-      position: 'relative',
-      maxWidth: '1200px',
-      margin: '0 auto'
-    }}>
-      <section style={{
-        textAlign: 'center',
-        padding: '2rem 0',
-        maxWidth: '800px',
-        margin: '0 auto 2.5rem auto'
-      }}>
-        <h1 style={{
-          fontSize: '2.25rem',
-          fontFamily: 'Georgia, Times New Roman, serif',
-          fontWeight: 'bold',
-          color: '#8C5E58',
-          marginBottom: '1rem'
-        }}>
-          Welcome to Your Digital Memory Box
-        </h1>
-        <p style={{
-          fontSize: '1.125rem',
-          color: 'rgba(44, 44, 44, 0.8)',
-          marginBottom: '1.5rem'
-        }}>
-          A collection of cherished memories for our dear friend.
-          Browse through the memories below or create your own contribution.
-        </p>
-        <Link 
-          href="/editor" 
-          style={{
-            display: 'inline-block',
-            backgroundColor: '#5B8C85',
-            color: 'white',
-            fontFamily: 'Georgia, Times New Roman, serif',
-            padding: '0.75rem 1.5rem',
-            borderRadius: '0.5rem',
-            boxShadow: '2px 2px 0px rgba(0, 0, 0, 0.1)',
-            transition: 'background-color 0.2s'
-          }}
-        >
-          Create a Memory
-        </Link>
-      </section>
-      
-      <section style={{ marginBottom: '2.5rem' }}>
-        <h2 style={{
-          fontSize: '1.5rem',
-          fontFamily: 'Georgia, Times New Roman, serif',
-          fontWeight: 'bold',
-          color: '#8C5E58',
-          marginBottom: '1.5rem'
-        }}>
-          Recent Memories
-        </h2>
-        
-        <div className="memory-card-grid">
-          {memories.map((memory) => (
-            <MemoryCard key={memory.id} memory={memory} />
-          ))}
+    <div className={styles.pageContainer}>
+      {/* Title for the entire grid section if desired, or keep specific titles */} 
+      {/* <h2 className={styles.mainGridTitle}>Spotlight & Recent</h2> */}
+
+      {fetchError && <p className={styles.fetchError}>{fetchError}</p>}
+
+      {!fetchError && (
+        <div className={styles.mainColumnsContainer}> {/* New two-column container */} 
+          {/* Left Column */}
+          <div className={styles.leftColumn}>
+            <div className={styles.jokePanelContainer}>
+              <YourMomJokePanel />
+            </div>
+            <div className={styles.onThisDayContainer}>
+              {onThisDayMemoryData ? (
+                <OnThisDayMemoryCard memory={onThisDayMemoryData} />
+              ) : (
+                <div className={styles.noOnThisDayPlaceholder}>
+                  <p>No special memory found for today.</p>
+                  <Link href="/editor" className={`btn ${styles.createOneLink}`}>
+                    Why not create one?
+                  </Link>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Right Column */}
+          <div className={styles.rightColumn}>
+            {rightColumnMemories.length > 0 ? (
+              <div className={styles.memoriesGridRight}> {/* 2x2 grid for memories */}
+                {rightColumnMemories.map((memory) => (
+                  <MemoryCard key={memory.id} memory={memory} />
+                ))}
+              </div>
+            ) : (
+              <p className={styles.noMemoriesMessageRightCol}>
+                No other recent memories to display here. Add some more!
+              </p>
+            )}
+          </div>
         </div>
-        
-        <div style={{
-          marginTop: '2rem',
-          textAlign: 'center'
-        }}>
+      )}
+
+      {/* View All Memories link - shown if there are any memories at all and no fetch error */} 
+      {!fetchError && allRecentMemories.length > 0 && (
+        <div className={styles.viewAllLinkWrapper}>
           <Link 
             href="/memories" 
-            style={{
-              display: 'inline-block',
-              border: '1px solid #F1E3BE',
-              backgroundColor: '#FCF9F1',
-              fontFamily: 'Courier New, Courier, monospace',
-              padding: '0.5rem 1rem',
-              borderRadius: '0.25rem',
-              boxShadow: '2px 2px 0px rgba(0, 0, 0, 0.1)',
-              fontSize: '0.875rem',
-              transition: 'background-color 0.2s'
-            }}
+            className={`btn ${styles.viewAllLink}`}
           >
             View All Memories
           </Link>
         </div>
-      </section>
+      )}
+      
+      {/* Message if absolutely no memories and no error */}
+      {!fetchError && allRecentMemories.length === 0 && !onThisDayMemoryData && (
+         <p className={styles.noMemoriesMessage}>No memories yet. Be the first to create one!</p>
+      )}
     </div>
   );
 }

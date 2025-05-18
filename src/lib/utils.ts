@@ -38,7 +38,7 @@ export function isValidUrl(url: string): boolean {
   try {
     new URL(url);
     return true;
-  } catch (err) {
+  } catch {
     return false;
   }
 }
@@ -62,7 +62,7 @@ export function extractSpotifyPlaylistId(input: string): string | null {
         return pathParts[playlistIndex + 1];
       }
     }
-  } catch (err) {
+  } catch {
     // Not a valid URL
   }
   
@@ -74,4 +74,22 @@ export function extractSpotifyPlaylistId(input: string): string | null {
  */
 export function getPlaceholderThumbnail(): string {
   return 'https://images.unsplash.com/photo-1505681425200-32e192a7a6e4?w=600&h=400&crop=center&auto=format';
-} 
+}
+
+/**
+ * Calculate the number of years ago from a given date string.
+ * Returns a string like "X years ago" or "This year" or "Last year".
+ */
+export function calculateYearsAgo(dateString: string | number | Date): string {
+  const date = new Date(dateString);
+  const now = new Date();
+  let years = now.getFullYear() - date.getFullYear();
+  // Adjust if the anniversary hasn't occurred yet this year
+  if (now.getMonth() < date.getMonth() || (now.getMonth() === date.getMonth() && now.getDate() < date.getDate())) {
+    years--;
+  }
+  if (years < 0) years = 0; // Should not happen with past dates, but good sanity check
+  return years === 0 ? "This year" : `${years} year${years === 1 ? '' : 's'} ago`;
+}
+
+export const DEFAULT_THUMBNAIL_URL = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSpMWTPrysjGzrbAmgfzfAvviAdr-_4LgMWgQ&s"; 

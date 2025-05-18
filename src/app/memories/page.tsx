@@ -1,32 +1,37 @@
 import MemoryCard from '@/components/MemoryCard';
-import { getAllMockMemories } from '@/lib/mockData';
+// import { getAllMockMemories } from '@/lib/mockData'; // Remove mock
+import { getAllMemories } from '@/lib/data'; // Add this
+import { Memory } from '@/types'; // Ensure Memory type is imported
+import styles from './memories.module.css'; // Import CSS Modules
 
-export default function MemoriesPage() {
-  // In production, this would be fetched from a real database
-  const memories = getAllMockMemories();
+export default async function MemoriesPage() { // Make async
+  let memories: Memory[] = [];
+  let fetchError: string | null = null;
+
+  try {
+    memories = await getAllMemories();
+  } catch (error) {
+    console.error("Memories page - fetch error:", error);
+    fetchError = "Could not load memories. Please try again later.";
+  }
+
+  // gridContainerStyle removed as it's no longer used
   
   return (
-    <div className="space-y-8">
-      <header className="mb-8">
-        <h1 className="text-3xl font-vintage font-bold text-vintage-brown mb-3">
-          All Memories
-        </h1>
-        <p className="text-lg text-ink/80">
-          Browse through all the memories in our collection.
-        </p>
-      </header>
+    <div className={styles.pageContainer}>
+      <h1 className={styles.pageTitle}>
+        All Memories
+      </h1>
       
-      {memories.length > 0 ? (
-        <div className="memory-card-grid">
+      {fetchError ? (
+        <p className={styles.fetchError}>{fetchError}</p>
+      ) : memories.length === 0 ? (
+        <p className={styles.noMemoriesMessage}>No memories yet. Create one!</p>
+      ) : (
+        <div className="memory-card-grid"> {/* Ensure this class matches global or local styles */}
           {memories.map((memory) => (
             <MemoryCard key={memory.id} memory={memory} />
           ))}
-        </div>
-      ) : (
-        <div className="text-center py-12">
-          <p className="text-xl text-ink/60 font-vintage">
-            No memories found. Be the first to create one!
-          </p>
         </div>
       )}
     </div>

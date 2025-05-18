@@ -1,0 +1,141 @@
+.pageWrapper {
+  max-width: 100%; /* Use full width from layout */
+  /* margin: 0 auto; */ /* Centering handled by layout's main element now */
+  padding: 0 1rem; /* Add some padding if layout doesn't provide enough */
+}
+
+.memoryDetailCard {
+  background-color: var(--sepia-50);
+  border: 1px solid var(--sepia-200);
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  margin-top: 1rem; /* Or adjust as needed */
+}
+
+.header {
+  /* margin-bottom: 2rem; */ /* Margin now handled by spacing within .memoryDetailCard */
+  position: relative;
+}
+
+/* New wrapper for title/meta and side elements */
+.headerTopRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start; /* Reverted to flex-start */
+  gap: 1.5rem;
+}
+
+.headerMainContent {
+  flex-grow: 1;
+  /* min-height: 0; // Potentially useful in flex children */
+}
+
+.headerSideContent {
+  flex-basis: 300px; /* Container for the side content */
+  flex-shrink: 0;
+  margin-left: 2rem;
+  position: relative;
+  display: flex; /* To help center the square thumbnail if needed, or align */
+  justify-content: center; /* Center the square thumbnail within the 300px area */
+  align-items: flex-start; /* Align to top */
+}
+
+.title {
+  font-size: 2.5rem; /* Slightly larger */
+  font-family: var(--font-primary);
+  font-weight: bold;
+  color: var(--vintage-brown);
+  margin-bottom: 0.5rem; /* Reduced margin */
+  text-decoration: underline;
+  text-decoration-color: var(--vintage-brown);
+  text-underline-offset: 0.2em;
+}
+
+.metaInfo {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem; /* More space between items */
+  align-items: center;
+  font-size: 0.875rem;
+  margin-bottom: 1rem;
+}
+
+.creatorName {
+  color: var(--vintage-brown);
+  font-family: var(--font-secondary);
+  text-decoration: underline;
+  text-decoration-color: var(--vintage-brown);
+  text-underline-offset: 0.15em;
+}
+
+.creationDate {
+  color: var(--ink-color-lightest);
+  font-family: var(--font-secondary);
+}
+
+.shortDescription {
+  font-size: 1.125rem;
+  font-family: var(--font-primary);
+  color: var(--ink-color-lighter);
+  margin-bottom: 0; /* Remove bottom margin to help with height calculation if it's the last element */
+  line-height: 1.6;
+}
+
+.spotifyEmbedWrapper {
+  width: 100%; /* Spotify can take full width of headerSideContent */
+  height: 150px;
+  background-color: var(--paper-white);
+  border-radius: 0.25rem;
+  overflow: hidden;
+}
+
+/* New styles for thumbnail when it acts as an embed */
+.thumbnailEmbedWrapper {
+  width: 150px;  /* Make wrapper square */
+  height: 150px; /* Make wrapper square */
+  background-color: var(--sepia-100); /* Placeholder if image fails, but should be covered */
+  border-radius: 0.25rem; 
+  overflow: hidden; 
+  /* display: flex, justify-content, align-items removed as image will cover */
+}
+
+.thumbnailImageInsideWrapper {
+  display: block;
+  width: 100%;  /* Fill the square wrapper */
+  height: 100%; /* Fill the square wrapper */
+  object-fit: cover; /* Cover the area, cropping if necessary to maintain aspect ratio */
+}
+
+/* General thumbnail styles (if used elsewhere, e.g., full-width thumbnail) */
+.thumbnailImage {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.375rem;
+  background-color: var(--sepia-100);
+}
+
+/* Styles for the rich text area, if it needs specific padding or styling 
+   now that it's not the primary card container itself */
+.richTextWrapper {
+  margin-top: 1.5rem; /* Space between header section and rich text within the card */
+}
+
+/* Remove or repurpose .memoryContentBlock */
+/* .memoryContentBlock { ... } */
+
+/* If Spotify embed is NOT in side content, but below header */
+.spotifyEmbedFullWidth {
+   margin-bottom: 1.5rem;
+}
+
+/* If thumbnail is NOT in side content, but below header & above content block */
+.thumbnailFullWidthWrapper {
+  margin-bottom: 1.5rem;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  box-shadow: var(--shadow-vintage-lg);
+  max-width: 500px; /* Or some other max-width if it's full width */
+  margin-left: auto;
+  margin-right: auto;
+} 

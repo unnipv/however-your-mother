@@ -2,73 +2,96 @@
 
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
-import Image from '@tiptap/extension-image';
-import Link from '@tiptap/extension-link';
-import Youtube from '@tiptap/extension-youtube';
-import Placeholder from '@tiptap/extension-placeholder';
+import ImageExtension from '@tiptap/extension-image';
+import LinkExtension from '@tiptap/extension-link';
+import YoutubeExtension from '@tiptap/extension-youtube';
+import PlaceholderExtension from '@tiptap/extension-placeholder';
+import styles from './RichTextEditor.module.css'; // Import the CSS module
 
 interface RichTextEditorProps {
   content: string;
   onChange: (content: string) => void;
+  className?: string; // Add className prop
 }
 
-export default function RichTextEditor({ content, onChange }: RichTextEditorProps) {
-  // Parse initial content if it exists
+export default function RichTextEditor({ content, onChange, className }: RichTextEditorProps) {
   let initialContent;
   try {
-    initialContent = content ? JSON.parse(content) : null;
-  } catch (error) {
-    initialContent = null;
+    initialContent = content ? JSON.parse(content) : undefined;
+  } catch {
+    initialContent = undefined;
   }
 
   const editor = useEditor({
     extensions: [
-      StarterKit,
-      Image.configure({
+      StarterKit.configure({
+        heading: { levels: [1, 2, 3] },
+      }),
+      ImageExtension.configure({
         inline: false,
         HTMLAttributes: {
-          class: 'rounded-lg shadow-vintage my-4 max-w-full h-auto',
+          // Keeping these inline for now as they are content-specific
+          style: 'border-radius: 0.5rem; box-shadow: 2px 2px 0px rgba(0,0,0,0.1); margin: 1rem 0; max-width: 100%; height: auto;',
         },
       }),
-      Link.configure({
+      LinkExtension.configure({
         openOnClick: false,
+        autolink: true,
         HTMLAttributes: {
-          class: 'text-vintage-blue underline',
-          rel: 'noopener noreferrer',
-          target: '_blank',
+          // Keeping these inline for now as they are content-specific
+          style: 'color: var(--vintage-blue); text-decoration: underline; cursor: pointer;',
         },
       }),
-      Youtube.configure({
+      YoutubeExtension.configure({
         HTMLAttributes: {
-          class: 'w-full aspect-video my-4 rounded-lg overflow-hidden',
+          // Keeping these inline for now as they are content-specific
+          style: 'width: 100%; aspect-ratio: 16 / 9; margin: 1rem 0; border-radius: 0.5rem; overflow: hidden;',
         },
       }),
-      Placeholder.configure({
-        placeholder: 'Start writing your memory here...',
+      PlaceholderExtension.configure({
+        placeholder: 'Share your detailed memory here... add images, videos, and links!',
       }),
     ],
     content: initialContent,
     onUpdate: ({ editor }) => {
       onChange(JSON.stringify(editor.getJSON()));
     },
+    editorProps: {
+      attributes: {
+        // Directly set outline to none on the ProseMirror element
+        style: 'outline: none !important;', 
+        // Other attributes that were here previously for min-height, padding, font, etc., 
+        // are now handled by .richTextEditorWrapper .ProseMirror in editor.module.css
+        // or by .editorContentArea .ProseMirror in RichTextEditor.module.css as fallbacks.
+      },
+    },
+    immediatelyRender: false,
   });
 
-  // Utility functions to handle editor commands
-  const toggleBold = () => editor?.chain().focus().toggleBold().run();
-  const toggleItalic = () => editor?.chain().focus().toggleItalic().run();
-  const toggleHeading = (level: 1 | 2 | 3) => 
-    editor?.chain().focus().toggleHeading({ level }).run();
-  const toggleBulletList = () => editor?.chain().focus().toggleBulletList().run();
-  const toggleOrderedList = () => editor?.chain().focus().toggleOrderedList().run();
+  const ToolbarButton = ({ onClick, title, children, isActive }: {
+    onClick: () => void;
+    title: string;
+    children: React.ReactNode;
+    isActive?: boolean;
+  }) => (
+    <button
+      type="button"
+      onClick={onClick}
+      // Combine base button style with active style if isActive is true
+      className={`${styles.toolbarButton} ${isActive ? styles.toolbarButtonActive : ''}`}
+      title={title}
+    >
+      {children}
+    </button>
+  );
+
   const addLink = () => {
     const url = window.prompt('Enter the URL');
     if (url) {
       editor?.chain().focus().setLink({ href: url }).run();
     }
   };
-  const removeLink = () => editor?.chain().focus().unsetLink().run();
 
-  // Add image from URL
   const addImage = () => {
     const url = window.prompt('Enter the image URL');
     if (url) {
@@ -76,7 +99,6 @@ export default function RichTextEditor({ content, onChange }: RichTextEditorProp
     }
   };
 
-  // Add YouTube video
   const addYoutubeVideo = () => {
     const url = window.prompt('Enter the YouTube video URL');
     if (url) {
@@ -84,124 +106,27 @@ export default function RichTextEditor({ content, onChange }: RichTextEditorProp
     }
   };
 
+  if (!editor) return null;
+
+  // Combine the component's own wrapper class with any passed-in className
+  const wrapperClassName = `${styles.editorWrapper} ${className || ''}`.trim();
+
   return (
-    <div className="rich-text-editor border border-sepia-300 rounded-lg overflow-hidden">
-      <div className="toolbar bg-sepia-100 border-b border-sepia-200 p-2 flex flex-wrap gap-2">
-        <button
-          type="button"
-          onClick={() => toggleHeading(1)}
-          className={`toolbar-btn p-1 rounded hover:bg-sepia-200 ${
-            editor?.isActive('heading', { level: 1 }) ? 'bg-sepia-200' : ''
-          }`}
-          title="Heading 1"
-        >
-          H1
-        </button>
-        <button
-          type="button"
-          onClick={() => toggleHeading(2)}
-          className={`toolbar-btn p-1 rounded hover:bg-sepia-200 ${
-            editor?.isActive('heading', { level: 2 }) ? 'bg-sepia-200' : ''
-          }`}
-          title="Heading 2"
-        >
-          H2
-        </button>
-        <button
-          type="button"
-          onClick={() => toggleHeading(3)}
-          className={`toolbar-btn p-1 rounded hover:bg-sepia-200 ${
-            editor?.isActive('heading', { level: 3 }) ? 'bg-sepia-200' : ''
-          }`}
-          title="Heading 3"
-        >
-          H3
-        </button>
-        <div className="h-5 w-px bg-sepia-300 mx-1"></div>
-        <button
-          type="button"
-          onClick={toggleBold}
-          className={`toolbar-btn p-1 rounded hover:bg-sepia-200 ${
-            editor?.isActive('bold') ? 'bg-sepia-200' : ''
-          }`}
-          title="Bold"
-        >
-          B
-        </button>
-        <button
-          type="button"
-          onClick={toggleItalic}
-          className={`toolbar-btn p-1 rounded hover:bg-sepia-200 ${
-            editor?.isActive('italic') ? 'bg-sepia-200' : ''
-          }`}
-          title="Italic"
-        >
-          I
-        </button>
-        <div className="h-5 w-px bg-sepia-300 mx-1"></div>
-        <button
-          type="button"
-          onClick={toggleBulletList}
-          className={`toolbar-btn p-1 rounded hover:bg-sepia-200 ${
-            editor?.isActive('bulletList') ? 'bg-sepia-200' : ''
-          }`}
-          title="Bullet List"
-        >
-          • List
-        </button>
-        <button
-          type="button"
-          onClick={toggleOrderedList}
-          className={`toolbar-btn p-1 rounded hover:bg-sepia-200 ${
-            editor?.isActive('orderedList') ? 'bg-sepia-200' : ''
-          }`}
-          title="Numbered List"
-        >
-          1. List
-        </button>
-        <div className="h-5 w-px bg-sepia-300 mx-1"></div>
-        <button
-          type="button"
-          onClick={addLink}
-          className={`toolbar-btn p-1 rounded hover:bg-sepia-200 ${
-            editor?.isActive('link') ? 'bg-sepia-200' : ''
-          }`}
-          title="Add Link"
-        >
-          Link
-        </button>
-        {editor?.isActive('link') && (
-          <button
-            type="button"
-            onClick={removeLink}
-            className="toolbar-btn p-1 rounded hover:bg-sepia-200"
-            title="Remove Link"
-          >
-            Unlink
-          </button>
-        )}
-        <div className="h-5 w-px bg-sepia-300 mx-1"></div>
-        <button
-          type="button"
-          onClick={addImage}
-          className="toolbar-btn p-1 rounded hover:bg-sepia-200"
-          title="Add Image"
-        >
-          Image
-        </button>
-        <button
-          type="button"
-          onClick={addYoutubeVideo}
-          className="toolbar-btn p-1 rounded hover:bg-sepia-200"
-          title="Add YouTube Video"
-        >
-          YouTube
-        </button>
+    <div className={wrapperClassName}>
+      <div className={styles.toolbar}>
+        <ToolbarButton onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()} isActive={editor.isActive('heading', { level: 1 })} title="H1">H1</ToolbarButton>
+        <ToolbarButton onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()} isActive={editor.isActive('heading', { level: 2 })} title="H2">H2</ToolbarButton>
+        <ToolbarButton onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()} isActive={editor.isActive('heading', { level: 3 })} title="H3">H3</ToolbarButton>
+        <ToolbarButton onClick={() => editor.chain().focus().toggleBold().run()} isActive={editor.isActive('bold')} title="Bold">B</ToolbarButton>
+        <ToolbarButton onClick={() => editor.chain().focus().toggleItalic().run()} isActive={editor.isActive('italic')} title="Italic">I</ToolbarButton>
+        <ToolbarButton onClick={() => editor.chain().focus().toggleBulletList().run()} isActive={editor.isActive('bulletList')} title="Bullet List">• List</ToolbarButton>
+        <ToolbarButton onClick={() => editor.chain().focus().toggleOrderedList().run()} isActive={editor.isActive('orderedList')} title="Numbered List">1. List</ToolbarButton>
+        <ToolbarButton onClick={addLink} isActive={editor.isActive('link')} title="Link">Link</ToolbarButton>
+        <ToolbarButton onClick={addImage} title="Image">Image</ToolbarButton>
+        <ToolbarButton onClick={addYoutubeVideo} title="YouTube">YouTube</ToolbarButton>
       </div>
-      
-      <div className="p-4 bg-white min-h-[300px]">
-        <EditorContent editor={editor} className="prose max-w-none h-full" />
-      </div>
+      {/* Apply a class to the EditorContent if needed for specific targeting of ProseMirror parent */}
+      <EditorContent editor={editor} className={styles.editorContentArea} />
     </div>
   );
-} 
+}

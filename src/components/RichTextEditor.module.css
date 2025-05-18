@@ -1,0 +1,71 @@
+/* src/components/RichTextEditor.module.css */
+
+.editorWrapper {
+  border: 1px solid var(--vintage-gold); /* --D4AB3E */
+  border-radius: 0.25rem;
+  background-color: var(--paper-white); /* --FFFFFF */
+  /* This class will be applied by the parent component 
+     (e.g., editor.module.css .richTextEditorWrapper) 
+     if specific context styling is needed. For general use, this wrapper applies. */
+}
+
+.toolbar {
+  padding: 0.75rem;
+  background-color: var(--vintage-cream); /* --F8F1DE */
+  border-bottom: 1px solid var(--vintage-gold-dark); /* --E9D59E */
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.toolbarButton {
+  padding: 0.4rem 0.7rem; /* Adjusted padding */
+  border-radius: 3px; /* Sharper radius */
+  border: 1px solid var(--vintage-gold);
+  background-color: var(--paper-white); /* --FCF9F1 */
+  cursor: pointer;
+  font-family: var(--font-secondary);
+  font-size: 0.85rem; /* Slightly larger */
+  margin-right: 0.5rem;
+  margin-bottom: 0.5rem;
+  color: var(--ink-black);
+  transition: background-color 0.2s, border-color 0.2s;
+}
+
+.toolbarButton:hover {
+  border-color: var(--vintage-gold-dark);
+  background-color: var(--vintage-cream);
+}
+
+.toolbarButtonActive {
+  /* Extends .toolbarButton implicitly via logic in component */
+  /* Explicitly define active state properties here */
+  background-color: var(--vintage-gold); /* --E9D59E */
+  border-color: var(--vintage-gold-dark); /* --BE932A */
+  color: var(--paper-white);
+}
+
+.toolbarButtonActive:hover {
+  background-color: var(--vintage-gold-dark);
+}
+
+/* Styles for the Tiptap editor content area itself */
+/* These are fallback if not styled by parent context */
+.editorContentArea .ProseMirror {
+  min-height: 200px; /* Default if not overridden by parent */
+  padding: 1rem;
+  outline: none;
+  font-family: var(--font-primary); /* Default to primary for content */
+  line-height: 1.6;
+  color: var(--ink-black);
+  background-color: var(--paper-white); /* Match wrapper */
+}
+
+.editorContentArea .ProseMirror p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  color: #aaa; /* Lighter placeholder text */
+  pointer-events: none;
+  height: 0;
+  font-style: italic;
+} 

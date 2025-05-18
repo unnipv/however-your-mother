@@ -1,0 +1,183 @@
+.pageContainer {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem var(--page-padding-x); /* Using global var for consistency */
+}
+
+.pageTitle {
+  font-size: 2.5rem; /* Slightly larger for emphasis */
+  font-family: var(--font-primary); /* Georgia, serif */
+  font-weight: bold;
+  color: var(--vintage-brown); /* Using theme variable */
+  margin-bottom: 2rem;
+  text-align: center;
+  text-transform: uppercase; /* Yearbook titles often uppercase */
+  letter-spacing: 0.1em; /* A bit of letter spacing */
+  border-bottom: 2px solid var(--vintage-gold);
+  padding-bottom: 0.5rem;
+}
+
+.formContainer {
+  background-color: var(--paper-white); /* Slightly off-white for vintage feel */
+  padding: 2.5rem;
+  border-radius: 3px; /* Subtle rounding */
+  border: 1px solid var(--vintage-gold-dark);
+  box-shadow: 0px 3px 6px rgba(0,0,0,0.08), 0px 0px 15px rgba(188, 143, 89, 0.1) inset; /* Subtle shadow + inner paper shadow */
+}
+
+.formRow {
+  margin-bottom: 1.75rem; /* Slightly more spacing */
+}
+
+.label {
+  display: block;
+  font-size: 1.1rem;
+  font-family: var(--font-primary);
+  color: var(--ink-black); /* Darker for better contrast on paper */
+  margin-bottom: 0.6rem;
+  font-weight: bold; /* Labels often bolder on forms */
+}
+
+.label span.requiredAsterisk { /* Specific for the asterisk */
+  color: var(--error-red);
+  margin-left: 0.25rem;
+  font-weight: bold;
+}
+
+.input,
+.textarea {
+  width: 100%;
+  padding: 0.85rem 1.1rem;
+  border-radius: 2px; /* Sharper edges */
+  border: 1px solid var(--vintage-gold);
+  background-color: var(--vintage-cream); /* Creamier background for inputs */
+  font-family: var(--font-secondary); /* Courier New, monospace */
+  font-size: 1rem;
+  color: var(--ink-black);
+  box-sizing: border-box;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.input:focus,
+.textarea:focus {
+  outline: none;
+  border-color: var(--vintage-gold-dark);
+  box-shadow: 0 0 0 2px rgba(212, 171, 62, 0.3); /* Focus ring with theme color */
+}
+
+.textarea {
+  min-height: 120px; /* Taller text area */
+  resize: vertical; /* Allow vertical resize */
+}
+
+.errorMessage {
+  margin-top: 0.35rem;
+  font-size: 0.85rem;
+  color: var(--error-red);
+  font-family: var(--font-secondary);
+}
+
+.submitButton {
+  background-color: var(--vintage-green); /* Theme color */
+  color: var(--paper-white);
+  font-family: var(--font-primary);
+  padding: 0.9rem 1.8rem;
+  border-radius: 3px;
+  border: 1px solid var(--vintage-green-dark);
+  cursor: pointer;
+  font-size: 1.1rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  box-shadow: 1px 1px 0px var(--vintage-green-dark), 2px 2px 0px rgba(0,0,0,0.1);
+  transition: background-color 0.2s, transform 0.1s, box-shadow 0.1s;
+}
+
+.submitButton:hover {
+  background-color: var(--vintage-green-dark); /* Darken on hover */
+  transform: translateY(-1px);
+  box-shadow: 2px 2px 0px var(--vintage-green-dark), 3px 3px 0px rgba(0,0,0,0.1);
+}
+
+.submitButton:active {
+  transform: translateY(0px);
+  box-shadow: 1px 1px 0px var(--vintage-green-dark);
+}
+
+.submitButton:disabled {
+  background-color: #cccccc;
+  color: #666666;
+  cursor: not-allowed;
+  border-color: #bbbbbb;
+  box-shadow: none;
+}
+
+.submitErrorContainer {
+  margin-bottom: 1.5rem;
+  text-align: center;
+  color: var(--error-red);
+  background-color: var(--error-background); /* Using theme variable */
+  padding: 0.85rem;
+  border-radius: 3px;
+  border: 1px solid var(--error-red);
+  font-family: var(--font-secondary);
+}
+
+.buttonContainer {
+  text-align: center;
+  margin-top: 2.5rem;
+}
+
+/* Styling for the RichTextEditor container if needed */
+.richTextEditorWrapper {
+  border: 1px solid var(--vintage-gold);
+  border-radius: 2px;
+  padding: 5px; /* Small padding around the editor itself */
+  background-color: var(--vintage-cream); /* Match input fields */
+  transition: border-color 0.2s, box-shadow 0.2s;
+  /* Add outline: none here to prevent default browser outline on the wrapper itself */
+  outline: none;
+}
+
+/* Apply focus styling to the wrapper when an element inside it is focused */
+.richTextEditorWrapper:focus-within {
+  border-color: var(--vintage-gold-dark); /* Can make border darker on focus */
+  box-shadow: 0 0 0 2px rgba(212, 171, 62, 0.4); /* Themed focus ring */
+  outline: none; /* Ensure no default outline */
+}
+
+/* Style Tiptap editor within the wrapper */
+.richTextEditorWrapper .ProseMirror {
+  min-height: 150px; /* Default height */
+  padding: 0.75rem 1rem;
+  font-family: var(--font-secondary); /* Match other inputs */
+  font-size: 1rem;
+  color: var(--ink-black);
+  background-color: var(--vintage-cream);
+  border: 1px solid transparent; /* To reserve space for focus border - or remove if wrapper handles focus */
+  border-radius: 0; 
+  transition: border-color 0.2s, box-shadow 0.2s;
+  outline: none; /* Explicitly remove outline from ProseMirror div itself */
+}
+
+.richTextEditorWrapper .ProseMirror:focus {
+  outline: none; 
+  /* The primary focus indicator is now on .richTextEditorWrapper:focus-within */
+  /* We can remove the box-shadow here if it feels redundant or causes visual clutter. */
+  /* For now, let's remove it to simplify, relying on the wrapper's focus. */
+  box-shadow: none; 
+}
+
+/* Style Tiptap toolbar buttons if they look out of place */
+/* Example: (You'll need to inspect Tiptap's generated classes) */
+/* .richTextEditorWrapper .tiptap-toolbar-button { ... } */
+
+/* Ensure placeholder text in Tiptap also looks appropriate */
+.richTextEditorWrapper .ProseMirror p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  color: #aaa; /* Lighter placeholder text */
+  pointer-events: none;
+  height: 0;
+  font-style: italic;
+} 

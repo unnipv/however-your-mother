@@ -1,101 +1,38 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import { formatDate } from '@/lib/utils';
+import { formatDate, DEFAULT_THUMBNAIL_URL } from '@/lib/utils';
 import { Memory } from '@/types';
+import styles from './MemoryCard.module.css';
 
 interface MemoryCardProps {
   memory: Memory;
 }
 
 export default function MemoryCard({ memory }: MemoryCardProps) {
-  const { title, slug, creator_names, short_description, thumbnail_url, created_at } = memory;
-  
+  const imageUrlToUse = (memory.thumbnail_url && memory.thumbnail_url.trim() !== '') 
+    ? memory.thumbnail_url 
+    : DEFAULT_THUMBNAIL_URL;
+
   return (
-    <Link href={`/memories/${slug}`} style={{ display: 'block', height: '100%' }}>
-      <div style={{
-        backgroundColor: '#FCF9F1',
-        border: '1px solid #F1E3BE',
-        borderRadius: '0.5rem',
-        boxShadow: '2px 2px 0px rgba(0, 0, 0, 0.1)',
-        overflow: 'hidden',
-        height: '100%',
-        display: 'flex',
-        flexDirection: 'column',
-        transition: 'transform 0.2s',
-      }}>
-        <div style={{ position: 'relative', height: '12rem', width: '100%', flexShrink: 0 }}>
-          {thumbnail_url ? (
-            <Image 
-              src={thumbnail_url} 
-              alt={title} 
-              fill 
-              style={{ 
-                objectFit: 'cover',
-                objectPosition: 'center top'
-              }}
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-              priority
-            />
-          ) : (
-            <div style={{
-              width: '100%',
-              height: '100%',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              backgroundColor: '#F1E3BE'
-            }}>
-              <span style={{
-                color: '#BE932A',
-                fontSize: '1.125rem',
-                fontFamily: 'Georgia, Times New Roman, serif'
-              }}>No Image</span>
-            </div>
+    <Link href={`/memories/${memory.slug}`} className={styles.cardLink}>
+      <Image
+        src={imageUrlToUse}
+        alt={`${memory.title} thumbnail background`}
+        fill
+        className={styles.backgroundImage}
+        sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+        priority={false}
+      />
+      <div className={styles.overlay}>
+        <div className={styles.contentWrapper}>
+          <h3 className={styles.title}>{memory.title}</h3>
+          {memory.creator_names && (
+            <p className={styles.creator}>By {memory.creator_names}</p>
           )}
-        </div>
-        
-        <div style={{ padding: '1rem', flexGrow: 1 }}>
-          <h3 style={{
-            fontSize: '1.25rem',
-            fontFamily: 'Georgia, Times New Roman, serif',
-            fontWeight: 'bold',
-            color: '#2C2C2C',
-            marginBottom: '0.25rem'
-          }}>{title}</h3>
-          
-          {creator_names && (
-            <p style={{
-              fontSize: '0.875rem',
-              color: '#8C5E58',
-              fontFamily: 'Courier New, Courier, monospace',
-              marginBottom: '0.5rem'
-            }}>
-              By {creator_names}
-            </p>
+          {memory.short_description && (
+            <p className={styles.description}>{memory.short_description}</p>
           )}
-          
-          {short_description && (
-            <p style={{
-              fontSize: '0.875rem',
-              color: 'rgba(44, 44, 44, 0.8)',
-              marginBottom: '0.75rem',
-              display: '-webkit-box',
-              WebkitLineClamp: 2,
-              WebkitBoxOrient: 'vertical',
-              overflow: 'hidden'
-            }}>
-              {short_description}
-            </p>
-          )}
-          
-          <div style={{
-            fontSize: '0.75rem',
-            color: '#4E6E5D',
-            fontFamily: 'Courier New, Courier, monospace',
-            marginTop: 'auto'
-          }}>
-            {formatDate(created_at)}
-          </div>
+          <p className={styles.date}>{formatDate(memory.created_at)}</p>
         </div>
       </div>
     </Link>

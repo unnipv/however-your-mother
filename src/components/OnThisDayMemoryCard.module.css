@@ -1,0 +1,190 @@
+.card {
+  /* background-color: var(--paper-color-light); */ /* Remove specific bg, image will cover */
+  /* border: 1px solid var(--vintage-brown-dark); */ /* Optional, remove if image bleeds to edge */
+  border-radius: 8px;
+  /* padding: 15px; */ /* Remove padding, overlay will handle it */
+  margin: 0;
+  width: 100%; 
+  height: 100%; 
+  /* box-shadow: var(--shadow-strong); */ /* Kept from original, can be adjusted */
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  display: flex; 
+  flex-direction: column;
+  position: relative; /* Added for absolute positioning of children */
+  overflow: hidden; /* Added */
+  aspect-ratio: 1 / 1; /* Added for consistent sizing like MemoryCard */
+  box-shadow: var(--shadow-vintage); /* Match MemoryCard shadow */
+}
+
+.card:hover {
+  transform: translateY(-3px) scale(1.01); /* Match MemoryCard hover */
+  box-shadow: var(--shadow-vintage-lg); /* Match MemoryCard hover */
+}
+
+.cardLink {
+  text-decoration: none;
+  color: inherit;
+  display: flex; 
+  flex-direction: column; 
+  flex-grow: 1; 
+  /* overflow: hidden; */ /* Moved to .card */
+  width: 100%; /* Ensure link takes full space */
+  height: 100%; /* Ensure link takes full space */
+  position: relative; /* Ensure it covers the card area for click */
+  z-index: 3; /* Above background image and overlay potentially if overlay doesn't cover all */
+}
+
+/* New Background Image Style (from MemoryCard.module.css) */
+.backgroundImage {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  z-index: 1;
+  opacity: 0.9; /* Matching MemoryCard */
+  transition: transform 0.3s ease-out;
+}
+
+.card:hover .backgroundImage { /* Adjusted to target .card hover */
+  transform: scale(1.05);
+  opacity: 1; /* Matching MemoryCard */
+}
+
+/* New Overlay Style (from MemoryCard.module.css) */
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  background: transparent; /* Can add subtle gradient if needed */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* Changed from flex-end */
+  padding: 0.8rem;
+  box-sizing: border-box;
+}
+
+.cardCategoryTitle {
+  font-family: var(--font-secondary);
+  font-size: 0.8rem; /* Adjusted for overlay */
+  color: var(--sepia-200); /* Lighter for dark overlay */
+  text-align: left; /* Align with other text */
+  margin-bottom: 0.2rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  /* Add semi-transparent background plaque for readability if needed */
+  background-color: rgba(44, 44, 44, 0.6);
+  padding: 0.1em 0.3em;
+  border-radius: 3px;
+  display: inline-block;
+}
+
+.memoryTitle { 
+  font-family: var(--font-primary);
+  font-size: 1.3rem; /* Adjusted for overlay */
+  font-weight: bold;
+  color: var(--paper-white); /* For dark overlay */
+  margin-top: 0;
+  margin-bottom: 0.4rem;
+  text-align: left;
+  line-height: 1.3;
+  /* Copied from MemoryCard.module.css .title for consistency */
+  text-decoration: underline;
+  text-decoration-color: var(--vintage-gold);
+  text-underline-offset: 0.2em;
+  background-color: rgba(44, 44, 44, 0.75);
+  padding: 0.2em 0.4em;
+  border-radius: 3px;
+  display: inline; /* Or inline-block if full width plaque desired */
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+
+/* Remove old .title if .memoryTitle replaces it fully */
+.title { display: none; }
+
+/* Remove .imageWrapper as image is now a direct background */
+.imageWrapper { display: none; }
+.image { display: none; }
+
+.content { /* This will be the content *inside* the overlay */
+  /* padding-top: 5px; */ /* Padding handled by .overlay now */
+  /* overflow-y: auto; */ /* Overlay handles overflow if needed */
+  /* flex-grow: 1; */
+  display: flex;
+  flex-direction: column;
+  position: relative; /* Ensure content is above overlay background if any */
+  z-index: 3; /* If overlay itself has a background gradient */
+}
+
+.yearsAgo {
+  font-family: var(--font-secondary);
+  font-size: 0.8rem; /* Adjusted */
+  color: var(--sepia-200);
+  text-align: left;
+  margin-bottom: 0.3rem;
+  background-color: rgba(44, 44, 44, 0.6);
+  padding: 0.1em 0.3em;
+  border-radius: 3px;
+  display: inline-block;
+}
+
+.description {
+  font-family: var(--font-primary);
+  font-size: 0.85rem; 
+  line-height: 1.4;
+  color: var(--sepia-100);
+  margin-bottom: 0.4rem;
+  text-align: left; 
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* Keep description concise on card */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.meta {
+  display: flex;
+  flex-direction: column; 
+  align-items: flex-start; 
+  gap: 0.2rem; 
+  font-family: var(--font-secondary);
+  font-size: 0.75rem; 
+  color: var(--vintage-gold);
+  /* border-top: 1px dashed var(--vintage-brown-light); */ /* Remove border, use plaques */
+  /* padding-top: 8px; */
+  margin-top: 0.3rem; /* Adjusted spacing */
+}
+
+.creator,
+.date {
+  background-color: rgba(44, 44, 44, 0.65);
+  padding: 0.1em 0.3em;
+  border-radius: 3px;
+  display: inline-block; /* For plaque effect */
+  line-height: 1.3;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .memoryTitle {
+    font-size: 1.2rem;
+  }
+  .cardCategoryTitle {
+    font-size: 0.75rem;
+  }
+  .yearsAgo {
+    font-size: 0.75rem;
+  }
+  .description {
+    font-size: 0.8rem;
+    -webkit-line-clamp: 2;
+  }
+  .meta {
+    font-size: 0.7rem;
+  }
+} 

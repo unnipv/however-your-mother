@@ -1,0 +1,51 @@
+.panel {
+  background-color: var(--paper-color-extralight);
+  border: 1px solid var(--vintage-brown-light);
+  border-radius: 8px;
+  padding: 1.5rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%; /* Try to make it fill height in its column cell */
+  box-shadow: var(--shadow-subtle);
+}
+
+.title {
+  font-family: var(--font-primary);
+  font-size: 1.3rem;
+  color: var(--vintage-brown-dark);
+  margin-top: 0;
+  margin-bottom: 1rem;
+  border-bottom: 1px dashed var(--vintage-brown-lighter);
+  padding-bottom: 0.5rem;
+}
+
+.jokeText {
+  font-family: var(--font-secondary);
+  font-size: 1rem;
+  color: var(--ink-color-medium);
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+  flex-grow: 1; /* Allow text to take available space */
+  display: flex;
+  align-items: center; /* Center text vertically if not much of it */
+  justify-content: center;
+}
+
+.newJokeButton {
+  /* Use global .btn styles and add specifics */
+  background-color: var(--vintage-blue);
+  color: var(--paper-white);
+  border: none;
+  padding: 0.6rem 1rem;
+  font-family: var(--font-secondary);
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  align-self: center; /* Center button */
+}
+
+.newJokeButton:hover {
+  background-color: var(--vintage-blue-dark);
+} 

@@ -1,9 +1,13 @@
 import './globals.css';
 import type { Metadata } from 'next';
 import Header from '@/components/Header';
+// import LeftSidebar from '@/components/LeftSidebar';
+import RightSidebar from '@/components/RightSidebar';
+import { PageTitleProvider } from "@/context/PageTitleContext";
+import styles from './layout.module.css';
 
 export const metadata: Metadata = {
-  title: 'HOWEVER-YOUR-MOTHER | A Box of Memories',
+  title: 'Joe Bobby - A man of multiple interests',
   description: 'A digital box of memories for our friend',
 };
 
@@ -14,31 +18,20 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body style={{ 
-        backgroundColor: '#FCF9F1',
-        color: '#2C2C2C',
-        minHeight: '100vh'
-      }}>
-        <Header />
-        <main style={{ 
-          maxWidth: '1200px',
-          margin: '0 auto',
-          padding: '2rem 1rem',
-          position: 'relative',
-          zIndex: 10
-        }}>
-          {children}
-        </main>
-        <footer style={{
-          marginTop: 'auto',
-          padding: '1.5rem 0',
-          textAlign: 'center',
-          fontSize: '0.875rem',
-          color: 'rgba(44, 44, 44, 0.6)',
-          fontFamily: 'Courier New, Courier, monospace'
-        }}>
-          <p>Built with ❤️ by friends</p>
-        </footer>
+      <body className={styles.body}>
+        <PageTitleProvider>
+          <Header />
+          <div className={styles.layoutGrid}>
+            {/* <LeftSidebar /> */}
+            <main className={styles.mainContent}>
+              {children}
+            </main>
+            <RightSidebar />
+          </div>
+          <footer className={styles.footer}>
+            <p>Built with ❤️ by friends</p>
+          </footer>
+        </PageTitleProvider>
       </body>
     </html>
   );

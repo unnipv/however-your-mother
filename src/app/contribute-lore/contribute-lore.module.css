@@ -1,0 +1,109 @@
+.pageContainer {
+  max-width: 700px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background-color: var(--vintage-cream);
+  border: 1px solid var(--sepia-300);
+  border-radius: 8px;
+  box-shadow: var(--shadow-vintage-lg);
+}
+
+.pageTitle {
+  font-family: var(--font-primary);
+  font-size: 2rem;
+  color: var(--vintage-brown);
+  text-align: center;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid var(--sepia-400);
+  padding-bottom: 0.75rem;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.label {
+  font-family: var(--font-secondary);
+  font-size: 0.9rem;
+  color: var(--ink-color-lightest);
+  font-weight: bold;
+}
+
+.textarea {
+  font-family: var(--font-primary);
+  font-size: 1rem;
+  padding: 0.75rem;
+  border: 1px solid var(--sepia-400);
+  border-radius: 4px;
+  background-color: var(--paper-white);
+  color: var(--ink-color);
+  min-height: 120px;
+  resize: vertical;
+}
+
+.textarea:focus {
+  outline: none;
+  border-color: var(--vintage-gold);
+  box-shadow: 0 0 0 2px rgba(212, 171, 62, 0.3); /* var(--vintage-gold) with alpha */
+}
+
+.submitButton {
+  background-color: var(--vintage-teal);
+  color: var(--paper-white);
+  font-family: var(--font-primary);
+  font-size: 1.1rem;
+  padding: 0.8rem 1.5rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  box-shadow: var(--shadow-vintage);
+  align-self: center; /* Center the button */
+}
+
+.submitButton:hover:not(:disabled) {
+  background-color: var(--vintage-teal-dark); /* You might need to define --vintage-teal-dark */
+  box-shadow: var(--shadow-vintage-lg);
+}
+
+.submitButton:disabled {
+  background-color: var(--sepia-300);
+  cursor: not-allowed;
+}
+
+.errorMessage,
+.errorMessageSubmit {
+  font-family: var(--font-secondary);
+  font-size: 0.85rem;
+  color: var(--error-red);
+  margin-top: 0.25rem;
+}
+
+.errorMessageSubmit {
+  text-align: center;
+  margin-top: 1rem;
+  padding: 0.5rem;
+  background-color: var(--error-background);
+  border: 1px solid var(--error-red);
+  border-radius: 4px;
+}
+
+.successMessage {
+  font-family: var(--font-secondary);
+  font-size: 0.9rem;
+  color: var(--vintage-green-dark); /* You might need to define --vintage-green-dark */
+  text-align: center;
+  margin-top: 1rem;
+  padding: 0.75rem;
+  background-color: rgba(78, 110, 93, 0.1); /* var(--vintage-green) with alpha */
+  border: 1px solid var(--vintage-green);
+  border-radius: 4px;
+} 

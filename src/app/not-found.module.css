@@ -1,0 +1,69 @@
+/* src/app/not-found.module.css */
+
+.container {
+  text-align: center; /* text-center */
+  padding-top: 4rem; /* py-16 (top part) */
+  padding-bottom: 4rem; /* py-16 (bottom part) */
+  max-width: 28rem; /* max-w-md */
+  margin-left: auto; /* mx-auto */
+  margin-right: auto; /* mx-auto */
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Center content since it's a flex column */
+  justify-content: center;
+  min-height: calc(100vh - 10rem); /* Roughly viewport height minus header/footer, for vertical centering */
+}
+
+.title {
+  font-size: 2.25rem; /* text-3xl */
+  font-family: var(--font-primary); /* font-vintage */
+  font-weight: bold;
+  color: var(--vintage-brown);
+  margin-bottom: 1rem; /* mb-4 */
+}
+
+.message {
+  color: var(--ink-color-lighter); /* text-ink/80 */
+  margin-bottom: 2rem; /* mb-8 */
+  font-family: var(--font-secondary);
+  line-height: 1.6;
+  max-width: 90%; /* Ensure text doesn't get too wide on slightly larger screens */
+}
+
+.actionsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem; /* gap-4 */
+  align-items: center; /* items-center */
+  width: 100%; /* Allow buttons to take full width if desired or be controlled by their own styles */
+}
+
+.primaryLink {
+  display: inline-block; /* To allow padding and act like a button */
+  background-color: var(--vintage-green); /* bg-sepia-700 equivalent */
+  color: var(--paper-white); /* text-white */
+  font-family: var(--font-primary); /* font-vintage */
+  padding: 0.75rem 1.5rem; /* py-2 px-4 */
+  border-radius: 0.375rem; /* rounded */
+  box-shadow: var(--shadow-vintage);
+  text-decoration: none; /* Remove default link underline */
+  transition: background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  text-align: center;
+  min-width: 200px; /* Ensure button has a decent minimum width */
+}
+
+.primaryLink:hover {
+  background-color: var(--vintage-green-dark); /* hover:bg-sepia-800 equivalent */
+  box-shadow: var(--shadow-vintage-lg);
+}
+
+.secondaryLink {
+  color: var(--vintage-blue);
+  font-family: var(--font-secondary); /* font-typewriter */
+  text-decoration: none; /* Remove default underline initially */
+  padding: 0.5rem; /* Add some padding for easier clicking */
+}
+
+.secondaryLink:hover {
+  text-decoration: underline;
+} 

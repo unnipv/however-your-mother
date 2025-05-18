@@ -1,0 +1,119 @@
+.cardLink {
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+  /* height: 100%; */
+  aspect-ratio: 1 / 1;
+  background-color: var(--sepia-200);
+  box-shadow: var(--shadow-vintage);
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.cardLink:hover {
+  transform: translateY(-3px) scale(1.01);
+  box-shadow: var(--shadow-vintage-lg);
+}
+
+.backgroundImage {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  z-index: 1;
+  transition: transform 0.3s ease-out;
+  opacity: 0.9;
+}
+
+.cardLink:hover .backgroundImage {
+  transform: scale(1.05);
+  opacity: 1;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  background: transparent;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 0.8rem;
+  box-sizing: border-box;
+  flex-grow: 1;
+}
+
+.contentWrapper {
+  position: relative;
+  z-index: 3;
+}
+
+.highlightedText {
+  background-color: rgba(44, 44, 44, 0.75);
+  padding: 0.15em 0.4em;
+  border-radius: 3px;
+  line-height: 1.4;
+  display: inline;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+
+.title {
+  font-size: 1.1rem;
+  font-family: var(--font-primary);
+  font-weight: bold;
+  color: var(--paper-white);
+  margin-bottom: 0.4rem;
+  text-decoration: underline;
+  text-decoration-color: var(--vintage-gold);
+  text-underline-offset: 0.2em;
+  line-height: 1.3;
+  background-color: rgba(44, 44, 44, 0.75);
+  padding: 0.2em 0.4em;
+  border-radius: 3px;
+  display: inline;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+
+.creator {
+  font-size: 0.75rem;
+  color: var(--sepia-200);
+  font-family: var(--font-secondary);
+  margin-bottom: 0.5rem;
+  background-color: rgba(44, 44, 44, 0.7);
+  padding: 0.15em 0.4em;
+  border-radius: 3px;
+  display: inline-block;
+}
+
+.description {
+  font-size: 0.75rem;
+  font-family: var(--font-primary);
+  color: var(--sepia-100);
+  margin-bottom: 0.4rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-height: 1.3;
+}
+
+.date {
+  font-size: 0.7rem;
+  color: var(--vintage-gold);
+  font-family: var(--font-secondary);
+  background-color: rgba(44, 44, 44, 0.65);
+  padding: 0.15em 0.4em;
+  border-radius: 3px;
+  display: inline-block;
+} 
