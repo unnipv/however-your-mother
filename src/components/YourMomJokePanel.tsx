@@ -4,16 +4,11 @@ import React, { useState, useEffect } from 'react';
 import styles from './YourMomJokePanel.module.css';
 
 const jokes = [
-  "Yo momma is so fat, when she skips a meal, the stock market drops.",
-  "Yo momma is so fat, she got baptized at Sea World.",
-  "Yo momma is so stupid, she stared at a cup of orange juice for 12 hours because it said \"concentrate\".",
-  "Yo momma is so ugly, she made a blind kid cry.",
-  "Yo momma is so poor, the ducks throw bread at her.",
-  "Yo momma is so fat, I took a picture of her last Christmas and it's still printing.",
-  "Yo momma is so old, her social security number is 1.",
-  "Yo momma is so stupid, she put lipstick on her forehead to make up her mind.",
-  "Yo momma is so short, she has to use a ladder to pick up a dime.",
-  "Yo momma is so fat, when she wears a yellow raincoat, people yell \"taxi!\""
+  "\"Why were you late to work today?\" \"Sorry boss, I was doing... overtime. With your mom.\"",
+  "\"Dude, where did you get that new watch?\" \"Your mom said I deserved a little something for my troubles.\"",
+  "\"You seem really happy today, what's up?\" \"Let's just say your mom's a great motivational speaker.\"",
+  "\"Why is your phone always on silent?\" \"Priorities. And your mom prefers uninterrupted conversations.\"",
+  "\"My therapist told me I have a fear of commitment.\" \"Funny, that's not what your mom said last night.\""
 ];
 
 const YourMomJokePanel: React.FC = () => {

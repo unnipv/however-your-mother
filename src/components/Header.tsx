@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 import styles from './Header.module.css'; // Import CSS Modules
 import { usePageTitle } from '@/context/PageTitleContext'; // Import usePageTitle
 import React from 'react';
+import ThemeSwitcher from './ThemeSwitcher'; // Import ThemeSwitcher
 
 export default function Header() {
   const pathname = usePathname();
@@ -45,34 +46,38 @@ export default function Header() {
   return (
     <header className={styles.headerBase}>
       <div className={styles.container}>
-        <div className={styles.headerContent}>
+        <div className={styles.headerTopRow}> {/* New wrapper for title and switcher */} 
           <div className={styles.titleWrapper}> 
             <Link href="/" className={styles.siteTitleLink}>
               Joseph Bobber, a man of multiple interests.
             </Link>
           </div>
-          
-          <nav className={styles.nav}>
-            <Link 
-              href="/" 
-              className={`${styles.navLink} ${isActive('/') ? styles.navLinkActive : ''}`}
-            >
-              Home
-            </Link>
-            <Link 
-              href="/memories" 
-              className={`${styles.navLink} ${isActive('/memories') ? styles.navLinkActive : ''}`}
-            >
-              Memories
-            </Link>
-            <Link 
-              href="/editor" 
-              className={`${styles.navLink} ${isActive('/editor') ? styles.navLinkActive : ''}`}
-            >
-              Create Memory
-            </Link>
-          </nav>
+          <div className={styles.themeSwitcherWrapper}> {/* Wrapper for switcher */} 
+            <ThemeSwitcher />
+          </div>
         </div>
+          
+        <nav className={styles.nav}>
+          <Link 
+            href="/" 
+            className={`${styles.navLink} ${isActive('/') ? styles.navLinkActive : ''}`}
+          >
+            Home
+          </Link>
+          <Link 
+            href="/memories" 
+            className={`${styles.navLink} ${isActive('/memories') ? styles.navLinkActive : ''}`}
+          >
+            Memories
+          </Link>
+          <Link 
+            href="/editor" 
+            className={`${styles.navLink} ${isActive('/editor') ? styles.navLinkActive : ''}`}
+          >
+            Create Memory
+          </Link>
+        </nav>
+
         {/* Dynamic Page Title Banner - now uses headerBannerTitle from context */}
         {headerBannerTitle && (
           <div className={styles.pageTitleBanner}>

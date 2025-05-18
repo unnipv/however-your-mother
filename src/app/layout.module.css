@@ -25,10 +25,10 @@
   padding: 1.5rem 0;
   text-align: center;
   font-size: 0.875rem;
-  color: var(--ink-color-lightest);
+  color: var(--footer-text, var(--ink-color-lightest));
   font-family: var(--font-secondary);
-  border-top: 1px solid var(--sepia-200);
-  background-color: rgba(241, 227, 190, 0.6);
+  border-top: 1px solid var(--border-color, var(--sepia-200));
+  background-color: var(--footer-bg, rgba(241, 227, 190, 0.6));
 }
 
 @media (max-width: 1024px) {

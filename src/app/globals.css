@@ -7,15 +7,16 @@ html {
   box-sizing: inherit;
 }
 
-:root {
+/* Default Theme (Vintage/Sepia) */
+html[data-theme="default"], :root {
   /* Vintage/Sepia Palette */
-  --sepia-50: #FCF9F1; /* Use as paper-white and vintage-cream base */
+  --sepia-50: #FCF9F1; 
   --sepia-100: #F8F1DE;
   --sepia-200: #F1E3BE;
   --sepia-300: #E9D59E;
   --sepia-400: #E2C77E;
   --sepia-500: #DBB95E;
-  --sepia-600: #D4AB3E; /* Use as vintage-gold */
+  --sepia-600: #D4AB3E; 
   --sepia-700: #BE932A;
   --sepia-800: #987624;
   --sepia-900: #72591D;
@@ -27,39 +28,137 @@ html {
   --vintage-brown: #8C5E58;
   --vintage-teal: #5B8C85;
   
-  /* Derived & New Theme Variables */
-  --paper-white: var(--sepia-50);         /* #FCF9F1 */
-  --vintage-cream: var(--sepia-100);      /* #F8F1DE - a bit more creamy than pure paper */
+  /* Derived & Theme Variables for Default Theme */
+  --paper-white: var(--sepia-50);         
+  --vintage-cream: var(--sepia-100);      
   --ink-black: #2C2C2C;
-  --ink-color: var(--ink-black); /* Alias for compatibility if used elsewhere */
+  --ink-color: var(--ink-black); 
   
-  --vintage-gold: var(--sepia-600);       /* #D4AB3E */
-  --vintage-gold-dark: var(--sepia-700);  /* #BE932A - Darker shade for borders/hovers */
+  --vintage-gold: var(--sepia-600);       
+  --vintage-gold-dark: var(--sepia-700);  
 
-  --vintage-green-dark: #3E5B4C;       /* Darker shade of vintage-green */
+  --vintage-green-dark: #3E5B4C;       
   
-  --error-red: var(--vintage-red);      /* #C94141 */
-  --error-background: #FEE2E2;          /* Light red background for errors */
+  --error-red: var(--vintage-red);      
+  --error-background: #FEE2E2;          
 
-  /* Layout & Global */
-  --page-padding-x: 1.5rem; /* Horizontal padding for page containers */
-
-  /* Base settings */
+  /* Base settings for Default Theme */
   --bg-color: var(--sepia-50);
   --text-color: var(--ink-color);
   --dot-color: rgba(44, 44, 44, 0.1);
+  --text-color-secondary: var(--ink-color-lighter); /* For less prominent text */
+  --text-color-muted: var(--ink-color-lightest); /* For placeholder/muted text */
+  --link-color: var(--vintage-blue);
+  --link-hover-color: var(--vintage-blue); /* Or a darker shade */
+  --border-color: var(--sepia-300);
+  --card-bg-color: var(--paper-white);
+  --button-primary-bg: var(--sepia-700);
+  --button-primary-text: var(--sepia-50);
+  --button-primary-border: var(--sepia-800);
+  --button-primary-hover-bg: var(--sepia-800);
+  --button-primary-hover-text: white;
+  --header-bg: var(--sepia-100);
+  --header-text: var(--vintage-brown);
+  --sidebar-bg: var(--sepia-100);
+  --sidebar-border: var(--sepia-200);
+  --footer-bg: var(--sepia-100);
+  --footer-text: var(--ink-color-lighter);
+  --heading-color: var(--vintage-brown);
+  --blockquote-border-color: var(--sepia-300);
+  --blockquote-text-color: var(--ink-color-lighter);
+  --scrollbar-track-color: var(--sepia-100);
+  --scrollbar-thumb-color: var(--sepia-400);
+  --scrollbar-thumb-hover-color: var(--sepia-500);
+  --rich-text-image-shadow: var(--shadow-vintage-lg);
+}
 
-  /* Fonts */
+/* Matcha Theme (Earthy Revision) */
+html[data-theme="matcha"] {
+  /* Matcha Palette */
+  --matcha-chamoisee: rgb(174, 150, 116); 
+  --matcha-alabaster: #f5f0c7ff; 
+  --matcha-lion: #AC9870ff;      
+  --matcha-sage: rgb(211, 211, 173);       
+  --matcha-olive: #B3B478ff;      
+
+  /* Derived & Theme Variables for Matcha Theme - EARTHY MAPPING */
+  --paper-white: var(--matcha-alabaster); /* Minimized use */       
+  --vintage-cream: #D2C6B0; /* Lighter tint of chamoisee/lion */
+  --ink-black: #4D4030; /* Dark brown for text on sage/light browns */
+  --ink-color: var(--ink-black);
+  
+  --vintage-gold: var(--matcha-lion);      
+  --vintage-gold-dark: var(--matcha-chamoisee); 
+
+  --vintage-green-dark: var(--matcha-olive); 
+  
+  --error-red: #C94141; 
+  --error-background: #FEE2E2;         
+
+  /* Base settings for Matcha Theme - EARTHY MAPPING */
+  --bg-color: var(--matcha-sage); /* Main background is SAGE */
+  --text-color: var(--ink-black); /* Dark brown text on sage */
+  --dot-color: rgba(142, 117, 82, 0.15); /* Chamoisee with alpha for dots on sage */
+  
+  --text-color-secondary: var(--matcha-lion); 
+  --text-color-muted: var(--matcha-chamoisee); 
+  
+  --link-color: var(--matcha-olive); 
+  --link-hover-color: var(--matcha-chamoisee); 
+  
+  --border-color: var(--matcha-chamoisee); /* Chamoisee borders */
+  --card-bg-color: #D2C6B0; /* Lighter Chamoisee/Lion tint for cards */
+  
+  --button-primary-bg: var(--matcha-chamoisee);
+  --button-primary-text: var(--matcha-alabaster);
+  --button-primary-border: var(--matcha-olive);
+  --button-primary-hover-bg: var(--matcha-alabaster);
+  --button-primary-hover-text: var(--matcha-chamoisee);
+  
+  --header-bg: var(--matcha-olive); /* HEADER is OLIVE (darker green) */
+  --header-text: var(--matcha-alabaster); /* Light text on olive header - CHANGED TO ALABASTER */
+  
+  --sidebar-bg: var(--matcha-olive); /* SIDEBAR is CHAMOISEE (muted brown) */
+  --sidebar-border: var(--matcha-lion); /* Lion border for sidebar */
+  
+  --footer-bg: var(--matcha-olive); /* FOOTER is OLIVE */
+  --footer-text: var(--matcha-alabaster); /* Light text on olive footer - CHANGED TO ALABASTER */
+  
+  --heading-color: var(--ink-black); /* HEADINGS are INK_BLACK (dark brown) for general contrast */
+  
+  --blockquote-border-color: var(--matcha-lion);
+  --blockquote-text-color: var(--matcha-olive); /* Olive text for blockquotes */
+  
+  --scrollbar-track-color: var(--matcha-alabaster); /* Sage track */
+  --scrollbar-thumb-color: var(--matcha-olive); /* Chamoisee thumb */
+  --scrollbar-thumb-hover-color: var(--matcha-sage); /* Lion hover */
+  
+  --rich-text-image-shadow: 2px 2px 0px var(--matcha-chamoisee); 
+}
+
+
+/* Global Variables (Independent of theme or defined within each theme) */
+:root {
+  /* Layout & Global - these seem theme-independent or are re-defined per theme */
+  --page-padding-x: 1.5rem; 
+
+  /* Fonts - Assuming these are theme-independent */
   --font-primary: Georgia, 'Times New Roman', serif;
   --font-secondary: 'Courier New', Courier, monospace;
 
-  /* Shadows */
+  /* Shadows - Assuming these are theme-independent unless re-defined in a theme like --rich-text-image-shadow */
   --shadow-vintage: 2px 2px 0px rgba(0, 0, 0, 0.1);
   --shadow-vintage-lg: 4px 4px 0px rgba(0, 0, 0, 0.1);
 
-  --ink-color-lighter: rgba(44, 44, 44, 0.8); /* for text-ink/80 */
+  /* These were in :root before, ensure they are covered by specific theme vars or are truly global */
+  --ink-color-lighter: rgba(44, 44, 44, 0.8); 
   --ink-color-lightest: rgba(44, 44, 44, 0.6);
+
+  /* Theme Representative Colors for Labels */
+  --cappuccino-theme-representative-color: var(--vintage-brown); /* From default theme, now Cappuccino */
+  --matcha-theme-representative-color: var(--matcha-olive); /* From matcha theme */
 }
+
 
 html, body {
   overflow-x: hidden;
@@ -89,7 +188,7 @@ main {
 
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-primary);
-  color: var(--vintage-brown); /* Default heading color */
+  color: var(--heading-color); /* Changed from var(--vintage-brown) to themeable var */
 }
 
 /* Custom scrollbar for vintage feel */
@@ -98,16 +197,16 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 ::-webkit-scrollbar-track {
-  background-color: var(--sepia-100);
+  background-color: var(--scrollbar-track-color); /* themed */
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: var(--sepia-400);
+  background-color: var(--scrollbar-thumb-color); /* themed */
   border-radius: 0.25rem;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background-color: var(--sepia-500);
+  background-color: var(--scrollbar-thumb-hover-color); /* themed */
   border-radius: 0.25rem; /* Ensuring consistency on hover */
 }
 
@@ -117,7 +216,7 @@ h1, h2, h3, h4, h5, h6 {
   line-height: 2.25rem; /* 36px */
   font-weight: bold;
   margin-bottom: 1rem;
-  color: var(--vintage-brown);
+  color: var(--heading-color); /* themed */
 }
 
 .rich-text-content h2 {
@@ -125,7 +224,7 @@ h1, h2, h3, h4, h5, h6 {
   line-height: 2rem; /* 32px */
   font-weight: bold;
   margin-bottom: 0.75rem; /* mb-3 */
-  color: var(--vintage-brown);
+  color: var(--heading-color); /* themed */
 }
 
 .rich-text-content h3 {
@@ -133,7 +232,7 @@ h1, h2, h3, h4, h5, h6 {
   line-height: 1.75rem; /* 28px */
   font-weight: bold;
   margin-bottom: 0.5rem; /* mb-2 */
-  color: var(--vintage-brown);
+  color: var(--heading-color); /* themed */
 }
 
 .rich-text-content p {
@@ -157,17 +256,18 @@ h1, h2, h3, h4, h5, h6 {
 .rich-text-content blockquote {
   margin-top: 1rem;
   margin-bottom: 1rem;
-  border-left: 4px solid var(--sepia-300);
+  border-left: 4px solid var(--blockquote-border-color); /* themed */
   padding-left: 1rem; /* pl-4 */
   font-style: italic;
-  color: var(--ink-color-lighter);
+  color: var(--blockquote-text-color); /* themed */
 }
 
 .rich-text-content a {
-  color: var(--vintage-blue);
+  color: var(--link-color); /* themed */
   text-decoration: underline;
 }
 .rich-text-content a:hover {
+  color: var(--link-hover-color); /* themed hover */
   text-decoration: none; /* Or keep underline, personal preference */
 }
 
@@ -175,7 +275,7 @@ h1, h2, h3, h4, h5, h6 {
   border-radius: 0.5rem; /* rounded-lg */
   margin-top: 1rem; /* my-4 */
   margin-bottom: 1rem; /* my-4 */
-  box-shadow: var(--shadow-vintage-lg);
+  box-shadow: var(--rich-text-image-shadow); /* themed */
   max-width: 100%;
   height: auto;
 }
@@ -212,14 +312,14 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .btn-primary {
-  background-color: var(--sepia-700);
-  color: var(--sepia-50);
-  border-color: var(--sepia-800);
+  background-color: var(--button-primary-bg); /* themed */
+  color: var(--button-primary-text); /* themed */
+  border-color: var(--button-primary-border); /* themed */
 }
 
 .btn-primary:hover {
-  background-color: var(--sepia-800);
-  color: white;
+  background-color: var(--button-primary-hover-bg); /* themed */
+  color: var(--button-primary-hover-text); /* themed */
 }
 
 /* Utility classes we might need globally */

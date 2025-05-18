@@ -1,0 +1,88 @@
+.switcherContainer {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem; /* Space between labels and toggle */
+}
+
+.themeLabel {
+  font-size: 0.75rem; /* Smaller text for labels */
+  /* color: var(--text-color-secondary, #888); Removed, will be set by specific classes or activeLabel */
+  transition: color 0.4s ease, font-weight 0.4s ease;
+  font-family: var(--font-secondary);
+}
+
+.cappuccinoLabelText {
+  composes: themeLabel;
+  color: var(--cappuccino-theme-representative-color);
+}
+
+.matchaLabelText {
+  composes: themeLabel;
+  color: var(--matcha-theme-representative-color);
+}
+
+.activeLabel {
+  color: var(--text-color) !important; /* Use !important to ensure override of specific label color */
+  font-weight: bold;
+}
+
+/* Contains the hidden checkbox and the visible slider */
+.toggleSwitch {
+  position: relative;
+  display: inline-block;
+  width: 50px; /* Adjusted width for a more compact toggle */
+  height: 26px; /* Adjusted height */
+  cursor: pointer;
+  user-select: none;
+  flex-shrink: 0; /* Prevent shrinking if space is tight */
+}
+
+/* Hide the default checkbox */
+.checkbox {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* The slider is the background of the toggle */
+.slider {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--button-primary-bg, var(--sepia-600)); 
+  border: 1px solid var(--button-primary-border, var(--sepia-700));
+  transition: .4s;
+  border-radius: 26px; /* Keep it pill-shaped */
+}
+
+/* The knob of the slider */
+.slider::before {
+  position: absolute;
+  content: "";
+  height: 20px; /* Adjusted knob size */
+  width: 20px;  /* Adjusted knob size */
+  left: 2px; 
+  bottom: 2px; 
+  background-color: var(--button-primary-text, white);
+  transition: .4s;
+  border-radius: 50%; 
+  box-shadow: 0 0 2px rgba(0,0,0,0.2);
+}
+
+/* When checkbox is checked, move the knob to the right and change slider background */
+.checkbox:checked + .slider {
+  background-color: var(--button-primary-bg, var(--capp-sienna)); 
+  border-color: var(--button-primary-border, var(--capp-eerie-black));
+}
+
+.checkbox:checked + .slider::before {
+  transform: translateX(24px); /* Adjusted translation for new width */
+}
+
+/* Focus state for accessibility */
+.checkbox:focus-visible + .slider {
+  outline: 2px solid var(--link-color, var(--vintage-blue));
+  outline-offset: 2px;
+} 

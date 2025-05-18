@@ -4,6 +4,7 @@ import Header from '@/components/Header';
 // import LeftSidebar from '@/components/LeftSidebar';
 import RightSidebar from '@/components/RightSidebar';
 import { PageTitleProvider } from "@/context/PageTitleContext";
+import { ThemeProvider } from "@/context/ThemeContext";
 import styles from './layout.module.css';
 
 export const metadata: Metadata = {
@@ -19,19 +20,21 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={styles.body}>
-        <PageTitleProvider>
-          <Header />
-          <div className={styles.layoutGrid}>
-            {/* <LeftSidebar /> */}
-            <main className={styles.mainContent}>
-              {children}
-            </main>
-            <RightSidebar />
-          </div>
-          <footer className={styles.footer}>
-            <p>Built with ❤️ by friends</p>
-          </footer>
-        </PageTitleProvider>
+        <ThemeProvider>
+          <PageTitleProvider>
+            <Header />
+            <div className={styles.layoutGrid}>
+              {/* <LeftSidebar /> */}
+              <main className={styles.mainContent}>
+                {children}
+              </main>
+              <RightSidebar />
+            </div>
+            <footer className={styles.footer}>
+              <p>Built with ❤️ by friends</p>
+            </footer>
+          </PageTitleProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

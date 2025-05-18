@@ -1,14 +1,16 @@
 .headerBase {
-  background-color: rgba(241, 227, 190, 0.6); /* var(--sepia-200) with alpha? Consider direct var if opaque desired */
-  border-bottom: 1px solid var(--sepia-200);
+  background-color: var(--header-bg, rgba(241, 227, 190, 0.6)); /* Use theme variable */
+  border-bottom: 1px solid var(--border-color, var(--sepia-200)); /* Use theme variable */
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
   padding: 1rem 0;
+  position: relative; /* Keep for absolute positioning of switcher */
 }
 
 .container {
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 1rem;
+  position: relative; /* Add relative for positioning context if switcher is inside container */
 }
 
 .headerContent {
@@ -18,23 +20,42 @@
   justify-content: space-between;
 }
 
+.headerTopRow {
+  display: flex;
+  justify-content: center; /* Center the title wrapper */
+  align-items: center;
+  width: 100%;
+  margin-bottom: 1rem; /* Space between top row and nav */
+  position: relative; /* For positioning the switcher absolutely within this row */
+}
+
 .titleWrapper {
-  margin-bottom: 1rem;
+  text-align: center; /* Center the site title text */
+}
+
+.themeSwitcherWrapper {
+  position: absolute; /* Position absolutely to the right */
+  right: 0; /* Align to the right of headerTopRow */
+  top: 50%;
+  transform: translateY(-50%); /* Vertically center */
 }
 
 .siteTitleLink {
   font-size: 1.5rem;
   font-family: var(--font-primary);
   font-weight: bold;
-  color: var(--vintage-brown);
+  color: var(--header-text); /* USE HEADER TEXT COLOR */
   text-decoration: underline;
-  text-decoration-color: var(--vintage-brown);
+  text-decoration-color: var(--header-text); /* USE HEADER TEXT COLOR */
   text-underline-offset: 0.2em; 
+  display: inline-block; /* To allow text-align:center from parent to work if it's the only child */
 }
 
 .nav {
   display: flex;
   gap: 1.5rem;
+  justify-content: center; /* Center the nav links below the title */
+  width: 100%;
 }
 
 .navLink {
@@ -61,16 +82,17 @@
   text-align: center;
   padding: 0.5rem 0;
   margin-top: 0.75rem; /* Space between nav and this banner */
-  border-top: 1px dashed var(--sepia-300); /* A subtle separator */
-  border-bottom: 1px dashed var(--sepia-300); /* A subtle separator */
+  border-top: 1px dashed var(--border-color, var(--sepia-300)); /* Use theme variable */
+  border-bottom: 1px dashed var(--border-color, var(--sepia-300)); /* Use theme variable */
 }
 
 .pageTitleBanner h2 {
   font-family: var(--font-primary);
   font-size: 1.25rem; /* Adjust size as needed */
-  color: var(--vintage-brown);
+  color: var(--header-text); /* USE HEADER TEXT COLOR */
   font-weight: bold;
-  margin: 0; /* Reset default h2 margin */
+  margin: 0 auto; /* Explicitly center the h2 block if text-align on parent isn't enough */
+  display: inline-block; /* So margin auto can center it */
   /* text-decoration: underline; */ /* Optional: if titles here should also be underlined */
   /* text-decoration-color: var(--vintage-brown); */
   /* text-underline-offset: 0.2em; */
