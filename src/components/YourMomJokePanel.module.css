@@ -14,7 +14,7 @@
 .title {
   font-family: var(--font-primary);
   font-size: 1.3rem;
-  color: var(--vintage-brown-dark);
+  color: var(--text-color);
   margin-top: 0;
   margin-bottom: 1rem;
   border-bottom: 1px dashed var(--vintage-brown-lighter);

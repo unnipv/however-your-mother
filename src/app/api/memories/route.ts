@@ -25,11 +25,21 @@ export async function GET() {
       return memory; // Return original memory if not protected
     });
 
-    return NextResponse.json(processedMemories);
+    return NextResponse.json(processedMemories, {
+      status: 200,
+      headers: {
+        'Cache-Control': 'no-store, max-age=0',
+      },
+    });
   } catch (error) {
     console.error("Failed to fetch memories:", error);
     const errorMessage = error instanceof Error ? error.message : "Failed to fetch memories";
-    return NextResponse.json({ message: errorMessage }, { status: 500 });
+    return NextResponse.json({ message: errorMessage }, {
+      status: 500,
+      headers: {
+        'Cache-Control': 'no-store, max-age=0',
+      },
+    });
   }
 }
 
@@ -40,7 +50,12 @@ export async function POST(request: Request) {
 
     // Basic validation (can be enhanced with Zod on the server-side too)
     if (!body.title || !body.content) { // Creator names and short_desc are handled below or optional
-      return NextResponse.json({ message: "Missing required fields: title and content" }, { status: 400 });
+      return NextResponse.json({ message: "Missing required fields: title and content" }, {
+        status: 400,
+        headers: {
+          'Cache-Control': 'no-store, max-age=0',
+        },
+      });
     }
 
     const creatorName = (body.creator_names && body.creator_names.trim() !== '') ? body.creator_names.trim() : 'Anonymous';
@@ -71,9 +86,14 @@ export async function POST(request: Request) {
       .select()
       .single(); // Assuming you want to return the newly created record
 
-    if (error) throw error;
+    if (error) throw error; // Will be caught by the main catch block
 
-    return NextResponse.json(newMemory, { status: 201 });
+    return NextResponse.json(newMemory, {
+      status: 201,
+      headers: {
+        'Cache-Control': 'no-store, max-age=0',
+      },
+    });
   } catch (error) {
     console.error("Failed to create memory API error:", error);
     
@@ -85,19 +105,20 @@ export async function POST(request: Request) {
     }
 
     let ErrorMessage = "An unexpected error occurred while creating the memory.";
+    let statusCode = 500;
 
     if (typeof error === 'object' && error !== null) {
       const errAsDbError = error as DbError;
       if (errAsDbError.code === '23505') { // PostgreSQL unique violation (e.g. slug)
         ErrorMessage = "A memory with this title already exists. Please choose a different title.";
-        return NextResponse.json({ message: ErrorMessage }, { status: 409 });
+        statusCode = 409;
       }
-      if (errAsDbError.code === '42P01') { // PostgreSQL undefined table
+      else if (errAsDbError.code === '42P01') { // PostgreSQL undefined table
         ErrorMessage = "Database error: The memories table seems to be missing or incorrectly configured.";
         console.error("Supabase error 42P01: 'memories' table likely missing or RLS issue.");
-        return NextResponse.json({ message: ErrorMessage }, { status: 500 });
+        // statusCode remains 500 for this internal server error type
       }
-      if (typeof errAsDbError.message === 'string') {
+      else if (typeof errAsDbError.message === 'string') {
         ErrorMessage = errAsDbError.message;
       }
     } else if (error instanceof Error) {
@@ -106,6 +127,11 @@ export async function POST(request: Request) {
       ErrorMessage = error;
     }
     
-    return NextResponse.json({ message: ErrorMessage }, { status: 500 });
+    return NextResponse.json({ message: ErrorMessage }, {
+      status: statusCode,
+      headers: {
+        'Cache-Control': 'no-store, max-age=0',
+      },
+    });
   }
 } 

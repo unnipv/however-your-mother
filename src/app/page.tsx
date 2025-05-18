@@ -37,7 +37,7 @@ async function getOnThisDayMemory(): Promise<Memory | null> {
       }
       return null; // In all !res.ok cases, return null to show placeholder UI
     }
-    const memoryData = await res.json();
+    const memoryData = await res.json(); 
     if (memoryData && memoryData.id) {
         return memoryData;
     }

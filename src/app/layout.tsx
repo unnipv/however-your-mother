@@ -24,14 +24,13 @@ export default function RootLayout({
           <PageTitleProvider>
             <Header />
             <div className={styles.layoutGrid}>
-              {/* <LeftSidebar /> */}
               <main className={styles.mainContent}>
                 {children}
               </main>
               <RightSidebar />
             </div>
             <footer className={styles.footer}>
-              <p>Built with ❤️ by friends</p>
+              <p>oh happy bday joe</p>
             </footer>
           </PageTitleProvider>
         </ThemeProvider>

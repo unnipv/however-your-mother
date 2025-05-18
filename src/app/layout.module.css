@@ -9,6 +9,7 @@
   grid-template-columns: 1fr 250px;
   gap: 0px;
   flex-grow: 1;
+  border-left: 30px solid var(--footer-bg, var(--sepia-200));
 }
 
 .mainContent {

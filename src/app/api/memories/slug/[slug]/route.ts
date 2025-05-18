@@ -9,7 +9,12 @@ export async function GET(
     const slug = params.slug;
 
     if (!slug) {
-      return NextResponse.json({ message: 'Slug parameter is required' }, { status: 400 });
+      return NextResponse.json({ message: 'Slug parameter is required' }, {
+        status: 400,
+        headers: {
+          'Cache-Control': 'no-store, max-age=0',
+        },
+      });
     }
 
     const { data: memory, error } = await supabase
@@ -24,20 +29,40 @@ export async function GET(
       // PGRST116: "JSON object requested, but 0 rows returned"
       // We want to treat "0 rows returned" as a 404, not a 500.
       if (error.code === 'PGRST116' && error.message.includes('0 rows returned')) {
-        return NextResponse.json({ message: 'Memory not found' }, { status: 404 });
+        return NextResponse.json({ message: 'Memory not found' }, {
+          status: 404,
+          headers: {
+            'Cache-Control': 'no-store, max-age=0',
+          },
+        });
       }
       console.error(`Error fetching memory by slug ${slug}:`, error);
-      throw error; // Let default error handling take over for other errors
+      throw error; // Let default error handling take over for other errors, will be caught by catch block
     }
 
     if (!memory) {
-      return NextResponse.json({ message: 'Memory not found' }, { status: 404 });
+      return NextResponse.json({ message: 'Memory not found' }, {
+        status: 404,
+        headers: {
+          'Cache-Control': 'no-store, max-age=0',
+        },
+      });
     }
 
-    return NextResponse.json(memory);
+    return NextResponse.json(memory, {
+      status: 200,
+      headers: {
+        'Cache-Control': 'no-store, max-age=0',
+      },
+    });
   } catch (error) {
     console.error("Failed to fetch memory by slug:", error);
     const errorMessage = error instanceof Error ? error.message : "Failed to fetch memory by slug";
-    return NextResponse.json({ message: errorMessage }, { status: 500 });
+    return NextResponse.json({ message: errorMessage }, {
+      status: 500,
+      headers: {
+        'Cache-Control': 'no-store, max-age=0',
+      },
+    });
   }
 } 

@@ -65,7 +65,10 @@ export async function GET() {
       if (createdAtError) {
         console.error("Error fetching memories by created_at for fallback:", createdAtError);
         // If both queries fail, then we throw an error
-        if (memoryDateError && createdAtError) throw createdAtError; // Check if memoryDateError is not null before throwing
+        if (memoryDateError && createdAtError) {
+            // Propagate the error, ensuring cache headers are set in the catch block
+            throw createdAtError; 
+        }
       }
 
       const matchingCreatedAtMemories: Memory[] = [];
@@ -87,14 +90,29 @@ export async function GET() {
     }
 
     if (onThisDayMemory) {
-      return NextResponse.json(onThisDayMemory);
+      return NextResponse.json(onThisDayMemory, {
+        status: 200,
+        headers: {
+          'Cache-Control': 'no-store, max-age=0',
+        },
+      });
     } else {
-      return NextResponse.json({ message: "No memory found for this day in previous years." }, { status: 404 });
+      return NextResponse.json({ message: "No memory found for this day in previous years." }, {
+        status: 404,
+        headers: {
+          'Cache-Control': 'no-store, max-age=0',
+        },
+      });
     }
 
   } catch (error) {
     console.error("Failed to fetch 'On This Day' memory:", error);
     const errorMessage = error instanceof Error ? error.message : "Failed to fetch 'On This Day' memory";
-    return NextResponse.json({ message: errorMessage }, { status: 500 });
+    return NextResponse.json({ message: errorMessage }, {
+      status: 500,
+      headers: {
+        'Cache-Control': 'no-store, max-age=0',
+      },
+    });
   }
 } 

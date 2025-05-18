@@ -32,7 +32,7 @@ html[data-theme="default"], :root {
   --paper-white: var(--sepia-50);         
   --vintage-cream: var(--sepia-100);      
   --ink-black: #2C2C2C;
-  --ink-color: var(--ink-black); 
+  --ink-color: var(--vintage-brown); 
   
   --vintage-gold: var(--sepia-600);       
   --vintage-gold-dark: var(--sepia-700);  
@@ -75,7 +75,7 @@ html[data-theme="default"], :root {
 /* Matcha Theme (Earthy Revision) */
 html[data-theme="matcha"] {
   /* Matcha Palette */
-  --matcha-chamoisee: rgb(174, 150, 116); 
+  --matcha-chamoisee: rgb(135, 118, 92); 
   --matcha-alabaster: #f5f0c7ff; 
   --matcha-lion: #AC9870ff;      
   --matcha-sage: rgb(211, 211, 173);       
@@ -85,7 +85,7 @@ html[data-theme="matcha"] {
   --paper-white: var(--matcha-alabaster); /* Minimized use */       
   --vintage-cream: #D2C6B0; /* Lighter tint of chamoisee/lion */
   --ink-black: #4D4030; /* Dark brown for text on sage/light browns */
-  --ink-color: var(--ink-black);
+  --ink-color: var(--matcha-chamoisee);
   
   --vintage-gold: var(--matcha-lion);      
   --vintage-gold-dark: var(--matcha-chamoisee); 
@@ -97,7 +97,7 @@ html[data-theme="matcha"] {
 
   /* Base settings for Matcha Theme - EARTHY MAPPING */
   --bg-color: var(--matcha-sage); /* Main background is SAGE */
-  --text-color: var(--ink-black); /* Dark brown text on sage */
+  --text-color: var(--matcha-chamoisee); /* Dark brown text on sage */
   --dot-color: rgba(142, 117, 82, 0.15); /* Chamoisee with alpha for dots on sage */
   
   --text-color-secondary: var(--matcha-lion); 
