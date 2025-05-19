@@ -6,7 +6,7 @@ import { useForm, SubmitHandler, Controller } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import RichTextEditor from '@/components/RichTextEditor';
-import { extractSpotifyPlaylistId } from '@/lib/utils';
+import { extractSpotifyId } from '@/lib/utils';
 import styles from './editor.module.css'; // Import CSS module
 import Image from 'next/image'; // For image preview
 
@@ -113,7 +113,7 @@ export default function EditorPage() {
     try {
       let spotifyId = data.spotify_playlist_id;
       if (spotifyId && spotifyId.trim() !== '') {
-        const extractedId = extractSpotifyPlaylistId(spotifyId);
+        const extractedId = extractSpotifyId(spotifyId);
         spotifyId = extractedId || spotifyId;
       }
 
@@ -271,13 +271,13 @@ export default function EditorPage() {
         
         <div className={styles.formRow}>
           <label htmlFor="spotify_playlist_id" className={styles.label}>
-            Spotify Playlist URL or ID
+            Spotify Playlist/Track URL or ID
           </label>
           <input
             id="spotify_playlist_id"
             type="text"
             className={styles.input}
-            placeholder="Paste a Spotify playlist link or ID (optional)"
+            placeholder="Paste a Spotify playlist/track link or ID (optional)"
             {...register('spotify_playlist_id')}
           />
         </div>

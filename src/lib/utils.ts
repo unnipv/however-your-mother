@@ -44,28 +44,34 @@ export function isValidUrl(url: string): boolean {
 }
 
 /**
- * Extract Spotify playlist ID from a URL or ID string
+ * Extract Spotify ID (track or playlist) from a URL or ID string
  */
-export function extractSpotifyPlaylistId(input: string): string | null {
-  // If it's already just an ID, return it
-  if (/^[a-zA-Z0-9]{22}$/.test(input)) {
-    return input;
+export function extractSpotifyId(input: string): string | null {
+  if (!input || input.trim() === '') return null;
+
+  // Regex for Spotify track URLs (accounts for optional internationalization segment e.g. /intl-en/)
+  const trackRegex = /^https?:\/\/(?:open|play)\.spotify\.com\/(?:intl-[a-zA-Z]{2}\/)?track\/([a-zA-Z0-9]+)/;
+  // Regex for Spotify playlist URLs (accounts for optional internationalization segment)
+  const playlistRegex = /^https?:\/\/(?:open|play)\.spotify\.com\/(?:intl-[a-zA-Z]{2}\/)?playlist\/([a-zA-Z0-9]+)/;
+  // Spotify IDs are typically 22 alphanumeric characters
+  const idRegex = /^[a-zA-Z0-9]{22}$/;
+
+  let match = input.match(trackRegex);
+  if (match && match[1]) {
+    return match[1]; // Return track ID
+  }
+
+  match = input.match(playlistRegex);
+  if (match && match[1]) {
+    return match[1]; // Return playlist ID
+  }
+
+  // If it's not a URL, check if it's just an ID that matches the typical format
+  if (idRegex.test(input)) {
+    return input; // Return as is, could be track or playlist ID
   }
   
-  try {
-    const url = new URL(input);
-    if (url.hostname.includes('spotify.com')) {
-      const pathParts = url.pathname.split('/');
-      const playlistIndex = pathParts.findIndex(part => part === 'playlist');
-      if (playlistIndex !== -1 && pathParts.length > playlistIndex + 1) {
-        return pathParts[playlistIndex + 1];
-      }
-    }
-  } catch {
-    // Not a valid URL
-  }
-  
-  return null;
+  return null; // Not a recognizable Spotify URL or ID that we can extract an ID from
 }
 
 /**

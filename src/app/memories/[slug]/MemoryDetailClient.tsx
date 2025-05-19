@@ -81,7 +81,7 @@ export default function MemoryDetailClient({ memory }: MemoryDetailClientProps) 
             <div className={styles.headerSideContent}>
               {memory.spotify_playlist_id && (
                 <div className={styles.spotifyEmbedWrapper}>
-                  <SpotifyEmbed playlistId={memory.spotify_playlist_id} />
+                  <SpotifyEmbed spotifyLinkOrId={memory.spotify_playlist_id} />
                 </div>
               )}
               {!memory.spotify_playlist_id && (
