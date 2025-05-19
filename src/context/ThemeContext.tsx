@@ -11,22 +11,24 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export const ThemeProvider = ({ children }: { children: ReactNode }) => {
-  const [theme, setThemeState] = useState<Theme>(() => {
-    if (typeof window !== 'undefined') {
-      const storedTheme = localStorage.getItem('theme') as Theme | null;
-      if (storedTheme && ['default', 'matcha'].includes(storedTheme)) {
-        return storedTheme;
-      }
-    }
-    return 'default'; // Default theme
-  });
+  // Initialize with the server-side default, client will also use this for initial render
+  const [theme, setThemeState] = useState<Theme>('default'); 
 
   useEffect(() => {
+    // This effect runs only on the client after mount
+    const storedTheme = localStorage.getItem('theme') as Theme | null;
+    if (storedTheme && ['default', 'matcha'].includes(storedTheme)) {
+      setThemeState(storedTheme); // Update to localStorage theme if valid
+    }
+  }, []); // Empty dependency array: run once on mount to sync with localStorage
+
+  useEffect(() => {
+    // This effect applies the theme to the document and updates localStorage whenever theme changes
     if (typeof window !== 'undefined') {
       document.documentElement.setAttribute('data-theme', theme);
       localStorage.setItem('theme', theme);
     }
-  }, [theme]);
+  }, [theme]); // Runs when theme state changes (either from initial localStorage sync or user interaction)
 
   const setTheme = (newTheme: Theme) => {
     setThemeState(newTheme);

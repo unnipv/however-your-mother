@@ -31,13 +31,15 @@
 }
 
 .headerSideContent {
-  flex-basis: 300px; /* Container for the side content */
+  /* flex-basis: 300px; */ /* REMOVED - Let content determine height/width more flexibly */
+  width: 300px; /* Explicitly set width if a fixed width is still desired */
   flex-shrink: 0;
   margin-left: 2rem;
   position: relative;
-  display: flex; /* To help center the square thumbnail if needed, or align */
-  justify-content: center; /* Center the square thumbnail within the 300px area */
-  align-items: flex-start; /* Align to top */
+  display: flex;
+  flex-direction: column; /* Stack items vertically: embed/thumbnail and then button */
+  justify-content: flex-start; /* Align items to the start of the column */
+  align-items: center; /* Center items horizontally if they don't take full width */
 }
 
 .title {
@@ -82,21 +84,22 @@
 }
 
 .spotifyEmbedWrapper {
-  width: 100%; /* Spotify can take full width of headerSideContent */
-  height: 150px;
+  width: 100%;
+  height: 80px; /* Explicit height for compact Spotify player */
   background-color: var(--paper-white);
   border-radius: 0.25rem;
   overflow: hidden;
+  margin-bottom: 1rem;
 }
 
 /* New styles for thumbnail when it acts as an embed */
 .thumbnailEmbedWrapper {
-  width: 150px;  /* Make wrapper square */
-  height: 150px; /* Make wrapper square */
-  background-color: var(--sepia-100); /* Placeholder if image fails, but should be covered */
+  width: 150px;
+  height: 150px;
+  background-color: var(--sepia-100);
   border-radius: 0.25rem; 
   overflow: hidden; 
-  /* display: flex, justify-content, align-items removed as image will cover */
+  margin-bottom: 1rem; /* Add margin below the embed/thumbnail before the button */
 }
 
 .thumbnailImageInsideWrapper {
@@ -138,4 +141,223 @@
   max-width: 500px; /* Or some other max-width if it's full width */
   margin-left: auto;
   margin-right: auto;
+}
+
+/* Styles for QR Code Share Feature */
+.shareQrButtonContainer {
+  /* margin-top: 2rem; */ /* Removed, now controlled by embed/thumbnail margin-bottom */
+  /* margin-bottom: 1rem; */ /* Not needed here */
+  text-align: center; 
+  width: 100%; /* Take full width of its new parent (headerSideContent column flow) */
+}
+
+.shareQrButton {
+  background-color: var(--button-secondary-bg, var(--vintage-gold-light));
+  color: var(--ink-black, #333);
+  font-family: var(--font-primary);
+  padding: 0.7rem 1.3rem;
+  border-radius: 3px;
+  border: 1px solid var(--button-secondary-border, var(--vintage-gold-dark));
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  box-shadow: 1px 1px 0px var(--vintage-brown-dark, #8c6e4d), 2px 2px 0px rgba(0,0,0,0.1);
+  transition: background-color 0.2s, transform 0.1s, box-shadow 0.1s;
+}
+
+.shareQrButton:hover {
+  background-color: var(--vintage-gold-dark);
+  color: var(--paper-white);
+  transform: translateY(-1px);
+  box-shadow: 2px 2px 0px var(--vintage-brown-dark), 3px 3px 0px rgba(0,0,0,0.1);
+}
+
+.qrModalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000; /* Ensure it's on top */
+  padding: 1rem;
+}
+
+.qrModalContent {
+  background-color: var(--paper-white, #fff);
+  padding: 1.5rem; /* Adjusted padding */
+  border-radius: 8px; /* Slightly more rounded */
+  box-shadow: 0 5px 20px rgba(0,0,0,0.25);
+  text-align: center;
+  max-width: 380px; /* Adjusted max-width */
+  width: 100%;
+  border: 1px solid var(--vintage-gold-dark);
+  display: flex; /* Added for flex column layout */
+  flex-direction: column; /* Stack items vertically */
+}
+
+.qrMemoryCardPreview {
+  position: relative; /* Container for absolute elements */
+  width: 100%; /* Take full width of modal content area, or set a fixed width */
+  max-width: 300px; /* Example max width for the card itself */
+  aspect-ratio: 1 / 1; /* Make it square like MemoryCard */
+  background-color: var(--sepia-200); /* Fallback if no image */
+  border-radius: 0.5rem; /* Match MemoryCard */
+  overflow: hidden; /* Match MemoryCard */
+  margin-left: auto; /* Center the card in the modal */
+  margin-right: auto;
+  margin-bottom: 1rem;
+  box-shadow: var(--shadow-vintage); /* Match MemoryCard */
+}
+
+.qrMemoryThumbnailPreview { /* This is like .backgroundImage */
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  z-index: 1;
+  opacity: 1; /* Full opacity */
+}
+
+.qrMemoryCardOverlay { /* This is like .overlay */
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* Pushes header to top, QR area to fill middle/bottom */
+  padding: 0.8rem;
+  box-sizing: border-box;
+}
+
+.qrMemoryCardHeader {
+  /* No specific background, text will have its own */
+  z-index: 3; /* Ensure header text is above general overlay elements if any */
+}
+
+.qrMemoryTitle {
+  font-size: 1rem; /* Adjusted from MemoryCard for smaller card */
+  font-family: var(--font-primary);
+  font-weight: bold;
+  color: var(--paper-white);
+  margin-bottom: 0.3rem;
+  line-height: 1.3;
+  background-color: rgba(44, 44, 44, 0.75); /* Match MemoryCard */
+  padding: 0.2em 0.4em;
+  border-radius: 3px;
+  display: inline; /* Match MemoryCard */
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+
+.qrMemoryCreator {
+  font-size: 0.7rem;
+  color: var(--sepia-200);
+  font-family: var(--font-secondary);
+  margin-bottom: 0.2rem;
+  background-color: rgba(44, 44, 44, 0.7); /* Match MemoryCard */
+  padding: 0.15em 0.4em;
+  border-radius: 3px;
+  display: inline-block; /* Match MemoryCard */
+  margin-top: 0.2rem;
+}
+
+.qrMemoryDate {
+  font-size: 0.65rem;
+  color: var(--vintage-gold);
+  font-family: var(--font-secondary);
+  background-color: rgba(44, 44, 44, 0.65); /* Match MemoryCard */
+  padding: 0.15em 0.4em;
+  border-radius: 3px;
+  display: inline-block; /* Match MemoryCard */
+  margin-top: 0.2rem;
+}
+
+.qrImageAndCodeArea {
+  /* Removed previous styling, now a flex child of overlay */
+  display: flex;
+  align-items: center; /* Vertically center QR in its allocated space */
+  justify-content: center; /* Horizontally center QR */
+  flex-grow: 1; /* Allows it to take up space between header and bottom of overlay */
+  position: relative; /* For z-index if needed, but QR container handles its own */
+  z-index: 3;
+}
+
+.qrCodeContainer {
+  /* padding: 1rem; */ /* Padding is now on the SVG's own background box */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative; 
+  z-index: 4; /* Ensure QR is on top of everything within this area */
+}
+
+.qrCodeContainer svg {
+  background-color: rgba(255, 255, 255, 0.85);
+  padding: 10px;
+  border-radius: 6px; 
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+.qrModalUrl {
+  font-family: var(--font-secondary);
+  font-size: 0.8rem;
+  color: var(--ink-color-medium);
+  margin-bottom: 1rem; /* Space before action buttons */
+  word-break: break-all;
+  padding: 0 0.5rem; /* Prevent text touching edges of modal */
+}
+
+.qrModalActions {
+  display: flex;
+  justify-content: space-around; /* Space out buttons */
+  width: 100%;
+  margin-top: auto; /* Push to bottom if modal content is taller */
+}
+
+.qrModalDownloadButton,
+.qrModalCloseButton {
+  padding: 0.6rem 1rem;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-family: var(--font-primary);
+  transition: background-color 0.2s, box-shadow 0.1s;
+  border: 1px solid transparent;
+}
+
+.qrModalDownloadButton {
+  background-color: var(--button-secondary-bg, var(--vintage-gold-light));
+  color: var(--ink-black, #333);
+  border-color: var(--button-secondary-border, var(--vintage-gold-dark));
+}
+
+.qrModalDownloadButton:hover {
+  background-color: var(--vintage-gold-dark);
+  color: var(--paper-white);
+  box-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+}
+
+.qrModalCloseButton {
+  background-color: var(--button-primary-bg);
+  color: var(--paper-white);
+  border-color: var(--button-primary-border);
+}
+
+.qrModalCloseButton:hover {
+  background-color: var(--vintage-green-dark);
+  box-shadow: 1px 1px 3px rgba(0,0,0,0.1);
 } 

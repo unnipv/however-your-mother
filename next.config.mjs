@@ -37,7 +37,11 @@ const nextConfig = {
         hostname: 'i.redd.it',
         pathname: '**',
       },
-    
+      {
+        protocol: 'https',
+        hostname: 'lgpbklbgbtdluqlhkqba.supabase.co',
+        pathname: '**',
+      },
     ],
   },
 };

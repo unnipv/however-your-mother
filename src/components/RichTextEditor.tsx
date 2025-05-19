@@ -2,10 +2,10 @@
 
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
-import ImageExtension from '@tiptap/extension-image';
 import LinkExtension from '@tiptap/extension-link';
 import YoutubeExtension from '@tiptap/extension-youtube';
 import PlaceholderExtension from '@tiptap/extension-placeholder';
+import CustomImageExtension, { triggerImageUpload } from '@/lib/tiptapExtensions/customImageExtension';
 import styles from './RichTextEditor.module.css'; // Import the CSS module
 
 interface RichTextEditorProps {
@@ -27,12 +27,10 @@ export default function RichTextEditor({ content, onChange, className }: RichTex
       StarterKit.configure({
         heading: { levels: [1, 2, 3] },
       }),
-      ImageExtension.configure({
-        inline: false,
-        HTMLAttributes: {
-          // Keeping these inline for now as they are content-specific
-          style: 'border-radius: 0.5rem; box-shadow: 2px 2px 0px rgba(0,0,0,0.1); margin: 1rem 0; max-width: 100%; height: auto;',
-        },
+      CustomImageExtension.configure({
+        // We can rely on the default uploadFn defined in the extension itself,
+        // or pass a specific one if needed: uploadFn: yourUploadFunction
+        // Default HTMLAttributes are also in the extension, but can be overridden here.
       }),
       LinkExtension.configure({
         openOnClick: false,
@@ -54,7 +52,8 @@ export default function RichTextEditor({ content, onChange, className }: RichTex
     ],
     content: initialContent,
     onUpdate: ({ editor }) => {
-      onChange(JSON.stringify(editor.getJSON()));
+      const jsonContent = editor.getJSON();
+      onChange(JSON.stringify(jsonContent));
     },
     editorProps: {
       attributes: {
@@ -93,10 +92,7 @@ export default function RichTextEditor({ content, onChange, className }: RichTex
   };
 
   const addImage = () => {
-    const url = window.prompt('Enter the image URL');
-    if (url) {
-      editor?.chain().focus().setImage({ src: url }).run();
-    }
+    triggerImageUpload(editor);
   };
 
   const addYoutubeVideo = () => {

@@ -3,9 +3,10 @@
 import { useEditor, EditorContent } from '@tiptap/react';
 import { JSONContent } from '@tiptap/core';
 import StarterKit from '@tiptap/starter-kit';
-import Image from '@tiptap/extension-image';
+// import Image from '@tiptap/extension-image'; // Remove old Image extension
 import Link from '@tiptap/extension-link';
 import Youtube from '@tiptap/extension-youtube';
+import CustomImageExtension from '@/lib/tiptapExtensions/customImageExtension'; // Import CustomImageExtension
 import React from 'react';
 
 interface RichTextRendererProps {
@@ -16,7 +17,8 @@ export default function RichTextRenderer({ content }: RichTextRendererProps) {
   const editor = useEditor({
     extensions: [
       StarterKit,
-      Image,
+      // Image, // Remove old Image extension from here
+      CustomImageExtension, // Add CustomImageExtension here
       Link.configure({
         openOnClick: true,
         HTMLAttributes: {
