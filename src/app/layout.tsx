@@ -31,6 +31,14 @@ export default function RootLayout({
             </div>
             <footer className={styles.footer}>
               <p>oh happy bday joe</p>
+              <a 
+                href="https://github.com/unnipv/however-your-mother/issues/new" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className={styles.footerLink}
+              >
+                Report Bug / Suggest Feature
+              </a>
             </footer>
           </PageTitleProvider>
         </ThemeProvider>

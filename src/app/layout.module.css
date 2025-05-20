@@ -32,6 +32,18 @@
   background-color: var(--footer-bg, rgba(241, 227, 190, 0.6));
 }
 
+.footerLink {
+  display: block;
+  margin-top: 0.5rem;
+  color: var(--accent-color, #0070f3);
+  text-decoration: none;
+}
+
+.footerLink:hover {
+  text-decoration: underline;
+  color: var(--accent-color-dark, #005bb5);
+}
+
 @media (max-width: 1024px) {
   .layoutGrid {
     grid-template-columns: 1fr 220px;

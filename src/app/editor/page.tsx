@@ -9,6 +9,7 @@ import RichTextEditor from '@/components/RichTextEditor';
 import { extractSpotifyId } from '@/lib/utils';
 import styles from './editor.module.css'; // Import CSS module
 import Image from 'next/image'; // For image preview
+import heic2any from 'heic2any'; // Import heic2any
 
 // Form validation schema
 const memoryFormSchema = z.object({
@@ -45,6 +46,7 @@ export default function EditorPage() {
     formState: { errors },
     setValue,
     watch, // To watch the thumbnail_url for preview
+    getValues,
   } = useForm<FormData>({
     resolver: zodResolver(memoryFormSchema),
     defaultValues: {
@@ -62,47 +64,78 @@ export default function EditorPage() {
   const currentThumbnailUrl = watch('thumbnail_url'); // For preview
 
   const handleThumbnailFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      setSelectedThumbnailFileName(file.name);
-      setThumbnailUploadError(null);
-      setIsUploadingThumbnail(true);
-      // Show local preview immediately for better UX
-      const localPreviewUrl = URL.createObjectURL(file);
-      setThumbnailPreview(localPreviewUrl);
-      setValue('thumbnail_url', ''); // Clear any manually entered URL first
+    const originalFile = event.target.files?.[0];
+    if (!originalFile) return;
 
-      const formData = new FormData();
-      formData.append('file', file);
+    let fileToUpload: File | Blob = originalFile;
+    let fileName = originalFile.name;
+    const isHeic = originalFile.type === 'image/heic' || originalFile.type === 'image/heif' || fileName.toLowerCase().endsWith('.heic') || fileName.toLowerCase().endsWith('.heif');
 
+    setThumbnailUploadError(null);
+    setIsUploadingThumbnail(true);
+    const localPreviewUrl = URL.createObjectURL(originalFile);
+    setThumbnailPreview(localPreviewUrl);
+    setValue('thumbnail_url', '');
+
+    if (isHeic) {
       try {
-        const response = await fetch('/api/upload', {
-          method: 'POST',
-          body: formData,
+        const convertedBlob = await heic2any({
+          blob: originalFile,
+          toType: 'image/jpeg',
+          quality: 0.8,
         });
-
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.error || 'Thumbnail upload failed');
-        }
-
-        const result = await response.json();
-        setValue('thumbnail_url', result.publicUrl, { shouldValidate: true });
-        // The watch('thumbnail_url') will update the preview that uses currentThumbnailUrl
-        // No need to call setThumbnailPreview(result.publicUrl) here if currentThumbnailUrl is used for final preview
-      } catch (error) {
-        const message = error instanceof Error ? error.message : 'An unknown error occurred during upload.';
-        setThumbnailUploadError(message);
-        setSelectedThumbnailFileName(""); // Clear filename on error
-      } finally {
+        const resultingBlob = Array.isArray(convertedBlob) ? convertedBlob[0] : convertedBlob;
+        fileName = fileName.substring(0, fileName.lastIndexOf('.') || fileName.length) + '.jpeg';
+        // Reconstruct as a File object to ensure it has the name and type properties correctly for FormData
+        fileToUpload = new File([resultingBlob], fileName, {
+            type: 'image/jpeg',
+            lastModified: new Date().getTime(),
+        });
+      } catch (conversionError) {
+        console.error('Error converting HEIC to JPEG:', conversionError);
+        setThumbnailUploadError('Failed to convert HEIC image. Please try a different format or image.');
         setIsUploadingThumbnail(false);
-        // If using local preview separate from currentThumbnailUrl, you might want to clear localPreviewUrl here
-        // For now, currentThumbnailUrl (from watch) will be the source of truth for the final preview.
-        if (localPreviewUrl && thumbnailPreview === localPreviewUrl) {
-             // If the preview is still the local one (e.g. upload failed and didn't set a new currentThumbnailUrl)
-             // we might want to clear it, or let the error message suffice.
-             // For now, let error message suffice. User can re-try or clear file input.
-        }
+        setSelectedThumbnailFileName("");
+        if (thumbnailPreview === localPreviewUrl) setThumbnailPreview(null);
+        URL.revokeObjectURL(localPreviewUrl); // Clean up local preview URL on conversion error
+        return;
+      }
+    }
+    
+    setSelectedThumbnailFileName(fileName);
+
+    const formData = new FormData();
+    // Ensure fileToUpload is used, and pass fileName explicitly as the third argument
+    // as fileToUpload might be a Blob if not reconstructed as File, or we want to ensure the new name is used.
+    formData.append('file', fileToUpload, fileName);
+
+    try {
+      const response = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Thumbnail upload failed');
+      }
+
+      const result = await response.json();
+      setValue('thumbnail_url', result.publicUrl, { shouldValidate: true });
+      // Update preview to the uploaded URL if successful
+      setThumbnailPreview(result.publicUrl); 
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'An unknown error occurred during upload.';
+      setThumbnailUploadError(message);
+      setSelectedThumbnailFileName("");
+      // Don't clear localPreviewUrl here, user might want to retry with same selection or see what they selected
+      // if (thumbnailPreview === localPreviewUrl && !currentThumbnailUrl) setThumbnailPreview(null); 
+    } finally {
+      setIsUploadingThumbnail(false);
+      // Only revoke if it wasn't a successful upload that now uses a remote URL for preview
+      // and it wasn't already revoked due to a conversion error.
+      if (localPreviewUrl && thumbnailPreview === localPreviewUrl && !getValues('thumbnail_url')) {
+          URL.revokeObjectURL(localPreviewUrl);
       }
     }
   };
