@@ -8,10 +8,15 @@ export interface Memory {
   thumbnail_url?: string | null;
   media_r2_keys?: string[]; // Array of R2 object keys
   spotify_playlist_id?: string | null;
+  spotify_link_type?: 'track' | 'playlist';
   password?: string | null; // This would be the hashed password
   created_at: string; // ISO date string
   updated_at: string; // ISO date string
   memory_date?: string | null; // Optional: ISO date string for the actual memory event
+  views?: number;
+  user_id?: string; // If you track which user created it
+  tags?: string[]; // If you add tagging
+  is_public?: boolean; // If you have public/private memories
 }
 
 export interface MemoryFormData {
@@ -21,6 +26,7 @@ export interface MemoryFormData {
   content: string; // Tiptap content as JSON string
   thumbnail_url?: string;
   spotify_playlist_id?: string;
+  spotify_link_type?: 'track' | 'playlist';
   password?: string;
   memory_date?: string; // Date of the memory event, YYYY-MM-DD
 }

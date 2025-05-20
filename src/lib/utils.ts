@@ -45,8 +45,14 @@ export function isValidUrl(url: string): boolean {
 
 /**
  * Extract Spotify ID (track or playlist) from a URL or ID string
+ * Returns an object with the id and type ('track' or 'playlist') or null if not found.
  */
-export function extractSpotifyId(input: string): string | null {
+export interface SpotifyIdParts {
+  id: string;
+  type: 'track' | 'playlist';
+}
+
+export function extractSpotifyId(input: string): SpotifyIdParts | null {
   if (!input || input.trim() === '') return null;
 
   // Regex for Spotify track URLs (accounts for optional internationalization segment e.g. /intl-en/)
@@ -58,17 +64,30 @@ export function extractSpotifyId(input: string): string | null {
 
   let match = input.match(trackRegex);
   if (match && match[1]) {
-    return match[1]; // Return track ID
+    return { id: match[1], type: 'track' }; // Return track ID and type
   }
 
   match = input.match(playlistRegex);
   if (match && match[1]) {
-    return match[1]; // Return playlist ID
+    return { id: match[1], type: 'playlist' }; // Return playlist ID and type
   }
 
   // If it's not a URL, check if it's just an ID that matches the typical format
+  // For raw IDs, we cannot determine the type here. This case should ideally be handled
+  // by ensuring the input is always a full URL when type detection is critical at this stage,
+  // or the type is provided from another source. Assuming raw IDs are not type-distinguishable here.
+  // For the editor, the user provides a full URL, so type detection will occur above.
+  // If a raw ID is passed, it implies the type is unknown or pre-determined.
   if (idRegex.test(input)) {
-    return input; // Return as is, could be track or playlist ID
+    // Cannot determine type from ID alone, returning null or a default
+    // For the purpose of the editor, this branch is less likely if user provides full URL.
+    // If this function is used elsewhere with only IDs, this needs reconsideration based on context.
+    // For now, let's assume an ID alone means we can't determine type *here*.
+    // The calling function (e.g. editor) will handle the input and this result.
+    // To make it compatible with SpotifyEmbed, if a raw ID is given, it will default to playlist later.
+    // Let's return it as a playlist type for now IF it's only an ID, though this is an assumption.
+    // This function's primary goal is to extract from URL. Editor will mostly provide URL.
+    return { id: input, type: 'playlist' }; // Defaulting raw ID to playlist - this is an assumption.
   }
   
   return null; // Not a recognizable Spotify URL or ID that we can extract an ID from

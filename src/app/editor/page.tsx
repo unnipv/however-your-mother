@@ -111,16 +111,31 @@ export default function EditorPage() {
     setIsSubmitting(true);
     setSubmitError(null);
     try {
-      let spotifyId = data.spotify_playlist_id;
+      let spotifyId: string | undefined = data.spotify_playlist_id;
+      let spotifyType: 'track' | 'playlist' | undefined = undefined;
+
       if (spotifyId && spotifyId.trim() !== '') {
-        const extractedId = extractSpotifyId(spotifyId);
-        spotifyId = extractedId || spotifyId;
+        const spotifyParts = extractSpotifyId(spotifyId);
+        if (spotifyParts) {
+          spotifyId = spotifyParts.id;
+          spotifyType = spotifyParts.type;
+        } else {
+          // If extractSpotifyId returns null, it means the input was not a valid Spotify URL/ID
+          // We might want to clear it or keep the original input if it's just an ID and type is assumed/defaulted by backend
+          // For now, if it's not extractable, we'll pass it as is, and the backend can decide.
+          // Or, more strictly, we could throw an error or clear spotifyId here if it's invalid.
+          // Let's assume for now we will still send the original input if not extractable, 
+          // and the backend/embed component will handle it (likely defaulting to playlist or showing error).
+          // To be more robust, we should probably clear or validate more strictly.
+          // For now, it will pass the original data.spotify_playlist_id if extraction fails.
+        }
       }
 
       const newMemoryPayload = {
         ...data,
         thumbnail_url: data.thumbnail_url || undefined,
         spotify_playlist_id: spotifyId || undefined,
+        spotify_link_type: spotifyType, // Send the extracted type
         password: data.password || undefined,
         memory_date: data.memory_date || null,
       };
